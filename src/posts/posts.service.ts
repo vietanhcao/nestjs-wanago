@@ -3,6 +3,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './post.schema';
 import { PostDto } from './dto/post.dto';
+import { User } from '../users/user.schema';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 class PostsService {
@@ -19,8 +21,13 @@ class PostsService {
     }
     return post;
   }
-  create(postData: PostDto) {
-    const createdPost = new this.postModel(postData);
+
+  async create(postData: PostDto, author: User) {
+    const createdPost = new this.postModel({
+      ...postData,
+      author,
+    });
+    // await createdPost.populate('categories').populate('series').execPopulate();
     return createdPost.save();
   }
 
@@ -38,6 +45,12 @@ class PostsService {
     if (!result) {
       throw new NotFoundException();
     }
+  }
+  async deleteMany(
+    ids: string[],
+    session: mongoose.ClientSession | null = null,
+  ) {
+    return this.postModel.deleteMany({ _id: ids }).session(session);
   }
 }
 

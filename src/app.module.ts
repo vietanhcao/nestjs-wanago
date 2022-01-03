@@ -5,15 +5,19 @@ import PostsModule from './posts/posts.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as Joi from '@hapi/joi';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
   imports: [
+    // The  ConfigModule built into NestJS supports @hapi/joi that we can use to define a validation schema.
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         MONGO_USERNAME: Joi.string().required(),
         MONGO_PASSWORD: Joi.string().required(),
         MONGO_DATABASE: Joi.string().required(),
-        MONGO_PATH: Joi.string().required(),
+        MONGO_HOST: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRATION_TIME: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
@@ -32,8 +36,9 @@ import * as Joi from '@hapi/joi';
       inject: [ConfigService],
     }),
     PostsModule,
+    AuthenticationModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [AppService],
 })
 export class AppModule {}
