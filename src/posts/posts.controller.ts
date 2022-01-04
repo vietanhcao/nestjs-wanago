@@ -42,6 +42,6 @@ export default class PostsController {
 
   @Put(':id')
   async updatePost(@Param() { id }: ParamsWithId, @Body() post: PostDto) {
-    return this.postsService.update(id, post);
+    return this.postsService.update(id, post)
   }
 }
