@@ -47,14 +47,12 @@ class UsersService {
 
   async create(userData: CreateUserDto) {
     const createdUser = new this.userModel(userData);
-    // await createdUser
-    //   .populate({
-    //     path: 'posts',
-    //     populate: {
-    //       path: 'categories',
-    //     },
-    //   })
-    //   .execPopulate();
+    // await createdUser.populate({
+    //   path: 'posts',
+    //   populate: {
+    //     path: 'categories',
+    //   },
+    // });
     return createdUser.save();
   }
 

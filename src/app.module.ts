@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as Joi from '@hapi/joi';
 import { AuthenticationModule } from './authentication/authentication.module';
+import CategoriesModule from './categories/categories.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
     }),
     PostsModule,
     AuthenticationModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [AppService],

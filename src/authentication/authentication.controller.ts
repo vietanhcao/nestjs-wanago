@@ -9,6 +9,7 @@ import {
   Get,
   ValidationPipe,
   UsePipes,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';
@@ -16,6 +17,8 @@ import RequestWithUser from './requestWithUser.interface';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import { Response } from 'express';
 import JwtAuthenticationGuard from './jwt-authentication.guard';
+import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import { User } from 'src/users/user.schema';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -24,6 +27,7 @@ export class AuthenticationController {
   //dto validation
   @Post('register')
   @UsePipes(ValidationPipe)
+  @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
   async register(@Body() registrationData: RegisterDto) {
     return this.authenticationService.register(registrationData);
   }
@@ -47,6 +51,7 @@ export class AuthenticationController {
     return response.json({ user, token });
   }
 
+  @HttpCode(200)
   @UseGuards(JwtAuthenticationGuard)
   @Post('log-out')
   async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
@@ -59,9 +64,10 @@ export class AuthenticationController {
 
   @UseGuards(JwtAuthenticationGuard)
   @Get()
+  @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
-    user.password = undefined;
+    // user.password = undefined;
     return user;
   }
 }

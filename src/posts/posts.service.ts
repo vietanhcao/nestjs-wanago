@@ -11,7 +11,10 @@ class PostsService {
   constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
   async findAll() {
-    return this.postModel.find();
+    return this.postModel
+      .find()
+      .populate('author', '-password -__v') // exclude password
+      .populate('categories'); //"populate" returning the data of the author along with the post.
   }
 
   async findOne(id: string) {
@@ -28,6 +31,7 @@ class PostsService {
       author,
     });
     // await createdPost.populate('categories').populate('series').execPopulate();
+    await createdPost.populate('categories');
     return createdPost.save();
   }
 

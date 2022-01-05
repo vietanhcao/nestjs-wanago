@@ -16,7 +16,7 @@ export class User {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
 
-  @Prop({ unique: true })
+  @Prop({ unique: true }) // unique
   email: string;
 
   @Prop()
@@ -31,7 +31,7 @@ export class User {
   @Exclude()
   password: string;
 
-  @Prop({ type: AddressSchema })
+  @Prop({ type: AddressSchema }) // one to one relationship
   @Type(() => Address)
   address: Address;
 
