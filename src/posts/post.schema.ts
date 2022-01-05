@@ -17,6 +17,7 @@ export class Post {
   title: string;
 
   @Prop({
+    //can modify the data before saving it in the database.
     set: (content: string) => {
       return content.trim();
     },

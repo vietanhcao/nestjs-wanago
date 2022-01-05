@@ -31,6 +31,7 @@ class UsersService {
   }
 
   async getById(id: number) {
+    // nested populate
     const user = await this.userModel.findById(id).populate({
       path: 'posts',
       populate: {
