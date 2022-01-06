@@ -12,7 +12,7 @@ class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly postsService: PostsService,
-    @InjectConnection() private readonly connection: mongoose.Connection,
+    @InjectConnection() private readonly connection: mongoose.Connection, // connection we’ve established
   ) {}
 
   async getByEmail(email: string) {
@@ -59,9 +59,7 @@ class UsersService {
 
   async delete(userId: string) {
     const session = await this.connection.startSession();
-
-    session.startTransaction();
-    try {
+    await session.withTransaction(async () => {
       const user = await this.userModel
         .findByIdAndDelete(userId)
         .populate('posts')
@@ -76,13 +74,41 @@ class UsersService {
         posts.map((post) => post._id.toString()),
         session,
       );
-      await session.commitTransaction();
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      session.endSession();
-    }
+    });
+
+    session.endSession();
+
+    // start transaction
+    // const session = await this.connection.startSession();
+
+    // session.startTransaction();
+    // try {
+    //   debugger
+    //   const user = await this.userModel
+    //     .findByIdAndDelete(userId)
+    //     .populate('posts')
+    //     .session(session);
+
+    //   if (!user) {
+    //     throw new NotFoundException();
+    //   }
+    //   debugger
+    //   throw new NotFoundException();
+    //   const posts = user.posts;
+
+    //   await this.postsService.deleteMany(
+    //     posts.map((post) => post._id.toString()),
+    //     session,
+    //   );
+    //   // everything work fine @commitTransaction
+    //   await session.commitTransaction();
+    // } catch (error) {
+    //   // discard the operations
+    //   await session.abortTransaction();
+    //   throw error;
+    // } finally {
+    //   session.endSession();
+    // }
   }
 }
 

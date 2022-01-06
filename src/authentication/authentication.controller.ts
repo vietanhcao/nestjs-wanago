@@ -10,6 +10,8 @@ import {
   ValidationPipe,
   UsePipes,
   UseInterceptors,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';
@@ -19,6 +21,7 @@ import { Response } from 'express';
 import JwtAuthenticationGuard from './jwt-authentication.guard';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 import { User } from 'src/users/user.schema';
+import ParamsWithId from 'src/utils/paramsWithId';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -69,5 +72,10 @@ export class AuthenticationController {
     const user = request.user;
     // user.password = undefined;
     return user;
+  }
+
+  @Delete(':id')
+  async deletePost(@Param() { id }: ParamsWithId) {
+    return this.authenticationService.deleteUserById(id);
   }
 }
