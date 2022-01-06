@@ -6,22 +6,28 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import PostsService from './posts.service';
 import ParamsWithId from '../utils/paramsWithId';
 import PostDto from './dto/post.dto';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
 import RequestWithUser from 'src/authentication/requestWithUser.interface';
+import { PaginationParams } from 'src/utils/paginationParams';
+import { Post as PostModel } from './post.schema';
+import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 
 @Controller('posts')
+@UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getAllPosts() {
-    return this.postsService.findAll();
+  async getAllPosts(@Query() { skip, limit, startId }: PaginationParams) {
+    return this.postsService.findAll(skip, limit, startId);
   }
 
   @Get(':id')
