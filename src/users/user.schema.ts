@@ -54,8 +54,9 @@ export class User {
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
-
+// index text search queries
 UserSchema.index({ firstName: 'text', lastName: 'text' });
+// UserSchema.index({ firstName: 1, lastName: 1 });//ascending index
 
 //@Getters fullName not save in database and auto return when has request
 UserSchema.virtual('fullName').get(function (this: User) {

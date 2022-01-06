@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './post.schema';
@@ -14,13 +14,23 @@ class PostsService {
     documentsToSkip = 0,
     limitOfDocuments?: number,
     startId?: string,
+    searchQuery?: string,
   ) {
+    const filters: FilterQuery<PostDocument> = startId
+      ? {
+          _id: {
+            $gt: startId,
+          },
+        }
+      : {};
+
+    if (searchQuery) {
+      filters.$text = {
+        $search: searchQuery,
+      };
+    }
     const findQuery = this.postModel
-      .find({
-        _id: {
-          $gt: startId,
-        },
-      })
+      .find(filters)
       .sort({ _id: 1 })
       .skip(+documentsToSkip)
       .populate('author', '-password -__v') // exclude password
