@@ -1,5 +1,5 @@
 import { Model, FilterQuery } from 'mongoose';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './post.schema';
 import { PostDto } from './dto/post.dto';
@@ -9,6 +9,7 @@ import UpdatePostDto from './dto/updatePost.dto';
 
 @Injectable()
 class PostsService {
+  private readonly logger = new Logger(PostsService.name);
   constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
   async findAll(
@@ -49,6 +50,7 @@ class PostsService {
   async findOne(id: string) {
     const post = await this.postModel.findById(id);
     if (!post) {
+      this.logger.warn('Tried to access a post that does not exist');
       throw new NotFoundException();
     }
     return post;

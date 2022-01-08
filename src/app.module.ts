@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import PostsModule from './posts/posts.module';
@@ -8,6 +8,7 @@ import * as Joi from '@hapi/joi';
 import { AuthenticationModule } from './authentication/authentication.module';
 import CategoriesModule from './categories/categories.module';
 import SeriesModule from './series/series.module';
+import LogsMiddleware from './utils/logs.middleware';
 
 @Module({
   imports: [
@@ -45,4 +46,8 @@ import SeriesModule from './series/series.module';
   controllers: [],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LogsMiddleware).forRoutes('*');
+  }
+}
