@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -19,6 +20,7 @@ import RequestWithUser from 'src/authentication/requestWithUser.interface';
 import { PaginationParams } from 'src/utils/paginationParams';
 import { Post as PostModel } from './post.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import UpdatePostDto from './dto/updatePost.dto';
 
 @Controller('posts')
 @UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
@@ -49,8 +51,18 @@ export default class PostsController {
     return this.postsService.delete(id);
   }
 
-  @Put(':id')
-  async updatePost(@Param() { id }: ParamsWithId, @Body() post: PostDto) {
+  @Put(':id') // meaning update all filed
+  @UseGuards(JwtAuthenticationGuard)
+  async updatePost(@Param() { id }: ParamsWithId, @Body() post: UpdatePostDto) {
+    return this.postsService.update(id, post);
+  }
+
+  @Patch(':id') // meaning update partial filed
+  @UseGuards(JwtAuthenticationGuard)
+  async updatePostByPatch(
+    @Param() { id }: ParamsWithId,
+    @Body() post: UpdatePostDto,
+  ) {
     return this.postsService.update(id, post);
   }
 }

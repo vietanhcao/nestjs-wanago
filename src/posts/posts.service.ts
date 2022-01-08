@@ -5,6 +5,7 @@ import { Post, PostDocument } from './post.schema';
 import { PostDto } from './dto/post.dto';
 import { User } from '../users/user.schema';
 import * as mongoose from 'mongoose';
+import UpdatePostDto from './dto/updatePost.dto';
 
 @Injectable()
 class PostsService {
@@ -34,7 +35,8 @@ class PostsService {
       .sort({ _id: 1 })
       .skip(+documentsToSkip)
       .populate('author', '-password -__v') // exclude password
-      .populate('categories'); //"populate" returning the data of the author along with the post.
+      .populate('categories') //"populate" returning the data of the author along with the post.
+      .populate('series'); //"populate" returning the data of the author along with the post.
     if (+limitOfDocuments) {
       findQuery.limit(limitOfDocuments);
     }
@@ -57,15 +59,20 @@ class PostsService {
       ...postData,
       author,
     });
-    // await createdPost.populate('categories').populate('series').execPopulate();
-    await createdPost.populate('categories');
+    await createdPost.populate(['categories', 'series']);
     return createdPost.save();
   }
 
-  async update(id: string, postData: PostDto) {
+  async update(id: string, postData: UpdatePostDto) {
+    // put do this
+    // .findByIdAndUpdate(id, postData)
+    // .setOptions({ overwrite: true, new: true })
     const post = await this.postModel
-      .findByIdAndUpdate(id, postData)
-      .setOptions({ overwrite: true, new: true });
+      //update partial
+      .findByIdAndUpdate({ _id: id }, postData, { new: true })
+      .populate('author')
+      .populate('categories')
+      .populate('series');
     if (!post) {
       throw new NotFoundException();
     }

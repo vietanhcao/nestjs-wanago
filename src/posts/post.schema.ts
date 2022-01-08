@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose';
 import { User } from '../users/user.schema';
 import { Transform, Type } from 'class-transformer';
 import { Category } from '../categories/category.schema';
+import { Series } from 'src/series/series.schema';
 // import { Series } from '../series/series.schema';
 
 export type PostDocument = Post & Document;
@@ -34,12 +35,12 @@ export class Post {
   @Type(() => Category)
   categories: Category[];
 
-  // @Prop({
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: Series.name,
-  // })
-  // @Type(() => Series)
-  // series?: Series;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Series.name,
+  })
+  @Type(() => Series)
+  series?: Series;
 }
 
 const PostSchema = SchemaFactory.createForClass(Post);
