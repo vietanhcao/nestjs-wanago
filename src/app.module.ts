@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TerminusModule } from '@nestjs/terminus';
 import PostsModule from './posts/posts.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,6 +10,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import CategoriesModule from './categories/categories.module';
 import SeriesModule from './series/series.module';
 import LogsMiddleware from './utils/logs.middleware';
+import HealthModule from './health/health.module';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import LogsMiddleware from './utils/logs.middleware';
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
+
       useFactory: async (configService: ConfigService) => {
         const username = configService.get('MONGO_USERNAME');
         const password = configService.get('MONGO_PASSWORD');
@@ -42,6 +45,7 @@ import LogsMiddleware from './utils/logs.middleware';
     AuthenticationModule,
     CategoriesModule,
     SeriesModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [AppService],
