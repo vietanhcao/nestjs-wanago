@@ -1,14 +1,19 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import getLogLevels from './utils/getLogLevels';
 import * as morgan from 'morgan';
+import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     //We don’t use the ConfigService above to read the environment variables because it isn’t initialized yet.
     logger: getLogLevels(process.env.NODE_ENV === 'production'),
   });
+
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new ExceptionsLoggerFilter(httpAdapter));
+
   app.use(morgan('tiny'));
   app.use(cookieParser());
   // await app.listen(3000);

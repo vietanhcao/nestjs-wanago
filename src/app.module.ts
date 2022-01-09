@@ -11,6 +11,8 @@ import CategoriesModule from './categories/categories.module';
 import SeriesModule from './series/series.module';
 import LogsMiddleware from './utils/logs.middleware';
 import HealthModule from './health/health.module';
+import { APP_FILTER } from '@nestjs/core';
+import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 
 @Module({
   imports: [
@@ -48,7 +50,13 @@ import HealthModule from './health/health.module';
     HealthModule,
   ],
   controllers: [],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: ExceptionsLoggerFilter,
+    },
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

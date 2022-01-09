@@ -6,6 +6,7 @@ import { PostDto } from './dto/post.dto';
 import { User } from '../users/user.schema';
 import * as mongoose from 'mongoose';
 import UpdatePostDto from './dto/updatePost.dto';
+import PostNotFoundException from './exception/postNotFund.exception';
 
 @Injectable()
 class PostsService {
@@ -51,7 +52,7 @@ class PostsService {
     const post = await this.postModel.findById(id);
     if (!post) {
       this.logger.warn('Tried to access a post that does not exist');
-      throw new NotFoundException();
+      throw new PostNotFoundException(id);
     }
     return post;
   }

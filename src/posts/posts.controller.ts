@@ -9,8 +9,12 @@ import {
   Put,
   Query,
   Req,
+  SetMetadata,
+  UseFilters,
   UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import PostsService from './posts.service';
 import ParamsWithId from '../utils/paramsWithId';
@@ -21,6 +25,7 @@ import { PaginationParams } from 'src/utils/paginationParams';
 import { Post as PostModel } from './post.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 import UpdatePostDto from './dto/updatePost.dto';
+import { ExceptionsLoggerFilter } from 'src/utils/exceptionsLogger.filter';
 
 @Controller('posts')
 @UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
@@ -28,6 +33,7 @@ export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
+  @UsePipes(new ValidationPipe({ transform: true })) // transform: true to active @Type(() => Number)
   async getAllPosts(
     @Query() { skip, limit, startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
@@ -36,6 +42,7 @@ export default class PostsController {
   }
 
   @Get(':id')
+  @UseFilters(ExceptionsLoggerFilter) // catch all exception
   async getPost(@Param() { id }: ParamsWithId) {
     return this.postsService.findOne(id);
   }
