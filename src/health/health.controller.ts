@@ -11,7 +11,7 @@ import {
 class HealthController {
   constructor(
     private healthCheckService: HealthCheckService,
-    private MongooseHealthIndicator: MongooseHealthIndicator,
+    private mongooseHealthIndicator: MongooseHealthIndicator,
     private memoryHealthIndicator: MemoryHealthIndicator,
     private diskHealthIndicator: DiskHealthIndicator,
   ) {}
@@ -20,7 +20,7 @@ class HealthController {
   @HealthCheck()
   check() {
     return this.healthCheckService.check([
-      () => this.MongooseHealthIndicator.pingCheck('database'),
+      () => this.mongooseHealthIndicator.pingCheck('database'),
       // the process should not use more than 400MB memory
       () =>
         this.memoryHealthIndicator.checkHeap('memory heap', 400 * 1024 * 1024),

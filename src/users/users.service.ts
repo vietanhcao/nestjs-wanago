@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { UserDocument, User } from './user.schema';
 import CreateUserDto from './dto/createUser.dto';
 import PostsService from '../posts/posts.service';
+import FilesService from '../files/files.service';
 import { InjectConnection } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 
@@ -12,6 +13,7 @@ class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly postsService: PostsService,
+    private readonly filesService: FilesService,
     @InjectConnection() private readonly connection: mongoose.Connection, // connection we’ve established
   ) {}
 
@@ -44,6 +46,35 @@ class UsersService {
     }
 
     return user;
+  }
+
+  async addAvatar(userId: number, imageBuffer: Buffer, filename: string) {
+    const avatar = await this.filesService.uploadPublicFile(
+      imageBuffer,
+      filename,
+    );
+    const userData = {
+      avatar,
+    };
+    await this.userModel.findByIdAndUpdate({ _id: userId }, userData, {
+      new: true,
+    });
+    return avatar;
+  }
+
+  async deleteAvatar(userId: number) {
+    const user = await this.getById(userId);
+    const fileId = user.avatar?._id;
+
+    const userData = {
+      avatar: null,
+    };
+    if (fileId) {
+      await this.userModel.findByIdAndUpdate({ _id: userId }, userData, {
+        new: true,
+      });
+      await this.filesService.deletePublicFile(fileId.toString());
+    }
   }
 
   async create(userData: CreateUserDto) {

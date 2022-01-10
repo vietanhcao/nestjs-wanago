@@ -3,6 +3,7 @@ import { Document, ObjectId } from 'mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import { Address, AddressSchema } from './address.schema';
 import { Post } from '../posts/post.schema';
+import { Files, FilesSchema } from '../files/files.schema';
 
 export type UserDocument = User & Document;
 
@@ -51,6 +52,10 @@ export class User {
   //Populating virtual properties
   @Type(() => Post)
   posts: Post[];
+
+  @Prop({ type: FilesSchema }) // one to one relationship
+  @Type(() => Files)
+  avatar: Files;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
