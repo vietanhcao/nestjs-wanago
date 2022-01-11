@@ -4,6 +4,7 @@ import { Exclude, Transform, Type } from 'class-transformer';
 import { Address, AddressSchema } from './address.schema';
 import { Post } from '../posts/post.schema';
 import { Files, FilesSchema } from '../files/files.schema';
+import { PrivateFile, PrivateFileSchema } from 'src/files/privateFiles.schema';
 
 export type UserDocument = User & Document;
 
@@ -49,7 +50,11 @@ export class User {
   })
   creditCardNumber?: string;
 
-  //Populating virtual properties
+  //Populating virtual properties query populate will show list (in jwt.strategy.ts) not save in UserSchema
+  @Type(() => PrivateFile)
+  files: PrivateFile[];
+
+  //Populating virtual properties query populate will show list (in jwt.strategy.ts) not save in UserSchema
   @Type(() => Post)
   posts: Post[];
 
@@ -78,6 +83,12 @@ UserSchema.virtual('posts', {
   ref: 'Post',
   localField: '_id',
   foreignField: 'author',
+});
+
+UserSchema.virtual('files', {
+  ref: 'PrivateFile',
+  localField: '_id',
+  foreignField: 'owner',
 });
 
 export { UserSchema };

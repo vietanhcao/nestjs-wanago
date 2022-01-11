@@ -4,10 +4,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import FilesService from './files.service';
 import { Files, FilesSchema } from './files.schema';
 import { ConfigService } from '@nestjs/config';
+import { PrivateFile, PrivateFileSchema } from './privateFiles.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Files.name, schema: FilesSchema }]),
+    MongooseModule.forFeature([
+      { name: Files.name, schema: FilesSchema },
+      { name: PrivateFile.name, schema: PrivateFileSchema },
+    ]),
   ],
   // controllers: [FilesController],
   providers: [FilesService, ConfigService],

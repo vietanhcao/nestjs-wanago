@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDocument, User } from './user.schema';
@@ -34,12 +38,15 @@ class UsersService {
 
   async getById(id: number) {
     // nested populate
-    const user = await this.userModel.findById(id).populate({
-      path: 'posts',
-      populate: {
-        path: 'categories',
+    const user = await this.userModel.findById(id).populate([
+      {
+        path: 'posts',
+        populate: {
+          path: 'categories',
+        },
       },
-    });
+      'files',
+    ]);
 
     if (!user) {
       throw new NotFoundException();
@@ -75,6 +82,47 @@ class UsersService {
       });
       await this.filesService.deletePublicFile(fileId.toString());
     }
+  }
+
+  async addPrivateFile(imageBuffer: Buffer, filename: string, userId: string) {
+    // const userData = {
+    //   avatar: null,
+    // };
+    // const user = await this.userModel.findByIdAndUpdate(
+    //   { _id: userId },
+    //   userData,
+    //   {
+    //     new: true,
+    //   },
+    // );
+    // await user.populate('files');
+    return this.filesService.uploadPrivateFile(imageBuffer, filename, userId);
+  }
+
+  async getPrivateFile(userId: string, fileId: string) {
+    const file = await this.filesService.getPrivateFile(fileId, userId);
+    if (file.info.owner._id.toString() === userId.toString()) {
+      return file;
+    }
+    throw new UnauthorizedException();
+  }
+
+  async getAllPrivateFiles(userId: number) {
+    const userWithFiles = await this.getById(userId);
+    if (userWithFiles) {
+      return Promise.all(
+        userWithFiles.files.map(async (file) => {
+          const url = await this.filesService.generatePresignedUrl(file.key);
+          return {
+            // ...file,
+            id: file._id,
+            key: file.key,
+            url,
+          };
+        }),
+      );
+    }
+    throw new NotFoundException('User with this id does not exist');
   }
 
   async create(userData: CreateUserDto) {
