@@ -7,11 +7,15 @@ import { User } from '../users/user.schema';
 import * as mongoose from 'mongoose';
 import UpdatePostDto from './dto/updatePost.dto';
 import PostNotFoundException from './exception/postNotFund.exception';
+import PostsSearchService from './postsSearch.service';
 
 @Injectable()
 class PostsService {
   private readonly logger = new Logger(PostsService.name);
-  constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
+  constructor(
+    @InjectModel(Post.name) private postModel: Model<PostDocument>,
+    private readonly postsSearchService: PostsSearchService,
+  ) {}
 
   async findAll(
     documentsToSkip = 0,
@@ -63,7 +67,41 @@ class PostsService {
       author,
     });
     await createdPost.populate(['categories', 'series']);
-    return createdPost.save();
+    const newPost = await createdPost.save();
+    this.postsSearchService.indexPost(newPost);
+    return newPost;
+  }
+
+  async searchForPosts(text: string) {
+    const results = await this.postsSearchService.search(text);
+    const ids = results.map((result) => result.id);
+    if (!ids.length) {
+      return [];
+    }
+
+    return this.postModel.find({
+      _id: { $in: ids },
+    });
+  }
+
+  async deletePost(id: string) {
+    const deleteResponse = await this.postModel.findByIdAndDelete(id);
+    if (!deleteResponse) {
+      throw new PostNotFoundException(id);
+    }
+    await this.postsSearchService.remove(id);
+  }
+
+  async updatePost(id: string, post: UpdatePostDto) {
+    await this.postModel.findByIdAndUpdate({ _id: id }, post, {
+      new: true,
+    });
+    const updatedPost = await this.findOne(id);
+    if (updatedPost) {
+      await this.postsSearchService.update(updatedPost);
+      return updatedPost;
+    }
+    throw new PostNotFoundException(id);
   }
 
   async update(id: string, postData: UpdatePostDto) {

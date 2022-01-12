@@ -37,7 +37,11 @@ export default class PostsController {
   async getAllPosts(
     @Query() { skip, limit, startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
+    @Query('search') search: string,
   ) {
+    if (search) {
+      return this.postsService.searchForPosts(search);
+    }
     return this.postsService.findAll(skip, limit, startId, searchQuery);
   }
 

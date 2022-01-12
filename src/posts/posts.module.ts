@@ -3,13 +3,16 @@ import { MongooseModule } from '@nestjs/mongoose';
 import PostsController from './posts.controller';
 import PostsService from './posts.service';
 import { Post, PostSchema } from './post.schema';
+import PostsSearchService from './postsSearch.service';
+import { SearchModule } from 'src/search/search.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
+    SearchModule,
   ],
   controllers: [PostsController],
-  providers: [PostsService],
+  providers: [PostsService, PostsSearchService],
   exports: [PostsService], // export to another module used
 })
 class PostsModule {}
