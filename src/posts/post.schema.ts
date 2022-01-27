@@ -9,7 +9,7 @@ import { Series } from 'src/series/series.schema';
 
 export type PostDocument = Post & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Post {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;

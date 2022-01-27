@@ -72,16 +72,32 @@ class PostsService {
     return newPost;
   }
 
-  async searchForPosts(text: string) {
-    const results = await this.postsSearchService.search(text);
-    const ids = results.map((result) => result.id);
+  async searchForPosts(
+    text: string,
+    documentsToSkip = 0,
+    limitOfDocuments?: number,
+  ) {
+    const searchResults = await this.postsSearchService.search(text);
+    const ids = searchResults.map((result) => result.id);
     if (!ids.length) {
       return [];
     }
+    const findQuery = this.postModel
+      .find({
+        _id: { $in: ids },
+      })
+      .sort({ _id: 1 })
+      .skip(+documentsToSkip)
+      .populate('author', '-password -__v') // exclude password
+      .populate('categories') //"populate" returning the data of the author along with the post.
+      .populate('series'); //"populate" returning the data of the author along with the post.
+    if (+limitOfDocuments) {
+      findQuery.limit(limitOfDocuments);
+    }
+    const results = await findQuery;
+    const count = await this.postModel.count();
 
-    return this.postModel.find({
-      _id: { $in: ids },
-    });
+    return { results, count };
   }
 
   async deletePost(id: string) {
@@ -116,6 +132,10 @@ class PostsService {
       .populate('series');
     if (!post) {
       throw new NotFoundException();
+    }
+    if (post) {
+      await this.postsSearchService.update(post);
+      return post;
     }
     return post;
   }

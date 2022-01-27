@@ -40,7 +40,7 @@ export default class PostsController {
     @Query('search') search: string,
   ) {
     if (search) {
-      return this.postsService.searchForPosts(search);
+      return this.postsService.searchForPosts(search, skip, limit);
     }
     return this.postsService.findAll(skip, limit, startId, searchQuery);
   }

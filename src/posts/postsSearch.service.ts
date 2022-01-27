@@ -58,7 +58,6 @@ export default class PostsSearchService {
       content: post.content,
       authorId: post.author._id,
     };
-
     const script = Object.entries(newBody).reduce((result, [key, value]) => {
       return `${result} ctx._source.${key}='${value}';`;
     }, '');
