@@ -7,6 +7,7 @@ import { LocalStrategy } from './local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
+import { JwtRefreshTokenStrategy } from './jwt-refresh.strategy';
 
 @Module({
   imports: [
@@ -24,7 +25,12 @@ import { JwtStrategy } from './jwt.strategy';
       }),
     }),
   ], // imports to use in file service
-  providers: [AuthenticationService, LocalStrategy, JwtStrategy], // imports to use in file controllers
+  providers: [
+    AuthenticationService,
+    LocalStrategy,
+    JwtStrategy,
+    JwtRefreshTokenStrategy,
+  ], // imports to use in file controllers
   controllers: [AuthenticationController],
 })
 export class AuthenticationModule {}

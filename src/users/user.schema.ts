@@ -18,7 +18,7 @@ export class User {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
 
-  @Prop({ unique: true }) // unique
+  @Prop({ unique: true, lowercase: true }) // unique
   email: string;
 
   @Prop()
@@ -32,6 +32,11 @@ export class User {
   @Prop()
   @Exclude()
   password: string;
+
+  // refreshToken
+  @Prop()
+  @Exclude()
+  currentHashedRefreshToken?: string;
 
   @Prop({ type: AddressSchema }) // one to one relationship
   @Type(() => Address)

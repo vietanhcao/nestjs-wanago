@@ -11,6 +11,7 @@ import PostsService from '../posts/posts.service';
 import FilesService from '../files/files.service';
 import { InjectConnection } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 class UsersService {
@@ -20,6 +21,41 @@ class UsersService {
     private readonly filesService: FilesService,
     @InjectConnection() private readonly connection: mongoose.Connection, // connection we’ve established
   ) {}
+
+  async setCurrentRefreshToken(refreshToken: string, userId: number) {
+    const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    const user = await this.userModel.findByIdAndUpdate(
+      { _id: userId },
+      { currentHashedRefreshToken },
+      { new: true },
+    );
+    if (!user) {
+      throw new NotFoundException();
+    }
+  }
+
+  async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
+    const user = await this.getById(userId);
+
+    const isRefreshTokenMatching = await bcrypt.compare(
+      refreshToken,
+      user.currentHashedRefreshToken,
+    );
+
+    if (isRefreshTokenMatching) {
+      return user;
+    }
+  }
+
+  async removeRefreshToken(userId: number) {
+    return this.userModel.findByIdAndUpdate(
+      { _id: userId },
+      {
+        currentHashedRefreshToken: null,
+      },
+      { new: true },
+    );
+  }
 
   async getByEmail(email: string) {
     const user = await this.userModel.findOne({ email }).populate({
