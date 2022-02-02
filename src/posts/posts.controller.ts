@@ -40,7 +40,8 @@ export default class PostsController {
     @Query('search') search: string,
   ) {
     if (search) {
-      return this.postsService.searchForPosts(search, skip, limit);
+      // hide elastic search
+      // return this.postsService.searchForPosts(search, skip, limit);
     }
     return this.postsService.findAll(skip, limit, startId, searchQuery);
   }
@@ -58,6 +59,7 @@ export default class PostsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthenticationGuard)
   async deletePost(@Param() { id }: ParamsWithId) {
     return this.postsService.delete(id);
   }

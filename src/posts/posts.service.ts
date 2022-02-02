@@ -68,7 +68,8 @@ class PostsService {
     });
     await createdPost.populate(['categories', 'series']);
     const newPost = await createdPost.save();
-    this.postsSearchService.indexPost(newPost);
+    // hide elastic search
+    // this.postsSearchService.indexPost(newPost);
     return newPost;
   }
 
@@ -144,6 +145,7 @@ class PostsService {
     if (!result) {
       throw new NotFoundException();
     }
+    return result.id;
   }
   async deleteMany(
     ids: string[],
