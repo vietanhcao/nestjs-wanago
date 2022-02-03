@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import PostsController from './posts.controller';
 import PostsService from './posts.service';
@@ -10,6 +10,10 @@ import { SearchModule } from 'src/search/search.module';
   imports: [
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     SearchModule,
+    CacheModule.register({
+      ttl: 5,
+      max: 100,
+    }),
   ],
   controllers: [PostsController],
   providers: [PostsService, PostsSearchService],

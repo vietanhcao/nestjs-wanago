@@ -1,5 +1,8 @@
 import {
   Body,
+  CacheInterceptor,
+  CacheKey,
+  CacheTTL,
   Controller,
   Delete,
   Get,
@@ -26,12 +29,16 @@ import { Post as PostModel } from './post.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 import UpdatePostDto from './dto/updatePost.dto';
 import { ExceptionsLoggerFilter } from 'src/utils/exceptionsLogger.filter';
+import { GET_POSTS_CACHE_KEY } from './postsCacheKey.constant';
 
 @Controller('posts')
 @UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey(GET_POSTS_CACHE_KEY)
+  @CacheTTL(120)
   @Get()
   @UsePipes(new ValidationPipe({ transform: true })) // transform: true to active @Type(() => Number)
   async getAllPosts(

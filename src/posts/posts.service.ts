@@ -1,5 +1,11 @@
 import { Model, FilterQuery } from 'mongoose';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './post.schema';
 import { PostDto } from './dto/post.dto';
@@ -8,6 +14,8 @@ import * as mongoose from 'mongoose';
 import UpdatePostDto from './dto/updatePost.dto';
 import PostNotFoundException from './exception/postNotFund.exception';
 import PostsSearchService from './postsSearch.service';
+import { Cache } from 'cache-manager';
+import { GET_POSTS_CACHE_KEY } from './postsCacheKey.constant';
 
 @Injectable()
 class PostsService {
@@ -15,7 +23,17 @@ class PostsService {
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     private readonly postsSearchService: PostsSearchService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async clearCache() {
+    const keys: string[] = await this.cacheManager.store.keys();
+    keys.forEach((key) => {
+      if (key.startsWith(GET_POSTS_CACHE_KEY)) {
+        this.cacheManager.del(key);
+      }
+    });
+  }
 
   async findAll(
     documentsToSkip = 0,
@@ -70,6 +88,7 @@ class PostsService {
     const newPost = await createdPost.save();
     // hide elastic search
     // this.postsSearchService.indexPost(newPost);
+    await this.clearCache();
     return newPost;
   }
 
@@ -97,6 +116,7 @@ class PostsService {
     }
     const results = await findQuery;
     const count = await this.postModel.count();
+    await this.clearCache();
 
     return { results, count };
   }
@@ -118,6 +138,7 @@ class PostsService {
       await this.postsSearchService.update(updatedPost);
       return updatedPost;
     }
+    await this.clearCache();
     throw new PostNotFoundException(id);
   }
 
@@ -138,6 +159,7 @@ class PostsService {
       await this.postsSearchService.update(post);
       return post;
     }
+    await this.clearCache();
     return post;
   }
   async delete(postId: string) {
@@ -145,12 +167,14 @@ class PostsService {
     if (!result) {
       throw new NotFoundException();
     }
+    await this.clearCache();
     return result.id;
   }
   async deleteMany(
     ids: string[],
     session: mongoose.ClientSession | null = null,
   ) {
+    await this.clearCache();
     return this.postModel.deleteMany({ _id: ids }).session(session);
   }
 }
