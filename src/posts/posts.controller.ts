@@ -30,13 +30,14 @@ import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerialize
 import UpdatePostDto from './dto/updatePost.dto';
 import { ExceptionsLoggerFilter } from 'src/utils/exceptionsLogger.filter';
 import { GET_POSTS_CACHE_KEY } from './postsCacheKey.constant';
+import { HttpCacheInterceptor } from './httpCache.interceptor';
 
 @Controller('posts')
 @UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @UseInterceptors(CacheInterceptor)
+  @UseInterceptors(HttpCacheInterceptor)
   @CacheKey(GET_POSTS_CACHE_KEY)
   @CacheTTL(120)
   @Get()

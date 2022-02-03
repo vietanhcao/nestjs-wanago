@@ -9,9 +9,28 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
     ports:
       - '27017:27017'
-    restart: always 
+    restart: always
     networks:
       - mongo
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - redis
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - redis
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
@@ -80,16 +99,17 @@ services:
     networks:
       - elastic
 
-
 volumes:
   data01:
     driver: local
   data02:
     driver: local
   data03:
-    driver: local   
+    driver: local
 networks:
   mongo:
+    driver: bridge
+  redis:
     driver: bridge
   elastic:
     driver: bridge

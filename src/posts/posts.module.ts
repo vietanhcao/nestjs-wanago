@@ -1,18 +1,26 @@
-import { Module, CacheModule } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { SearchModule } from 'src/search/search.module';
+import { Post, PostSchema } from './post.schema';
 import PostsController from './posts.controller';
 import PostsService from './posts.service';
-import { Post, PostSchema } from './post.schema';
 import PostsSearchService from './postsSearch.service';
-import { SearchModule } from 'src/search/search.module';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     SearchModule,
-    CacheModule.register({
-      ttl: 5,
-      max: 100,
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        store: redisStore,
+        host: configService.get('REDIS_HOST'),
+        port: configService.get('REDIS_PORT'),
+        ttl: 120,
+      }),
     }),
   ],
   controllers: [PostsController],

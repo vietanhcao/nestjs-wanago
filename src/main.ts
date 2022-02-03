@@ -6,6 +6,7 @@ import * as morgan from 'morgan';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
+import { runInCluster } from './utils/runInCluster';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -28,6 +29,7 @@ async function bootstrap() {
   });
   // await app.listen(3000);
   await app.listen(process.env.PORT, '0.0.0.0');
+  console.log(`SERVER (${process.pid}) IS RUNNING ON `, process.env.PORT);
 }
 
 if (isNaN(parseInt(process.env.PORT))) {
@@ -35,3 +37,6 @@ if (isNaN(parseInt(process.env.PORT))) {
   process.exit(666);
 }
 bootstrap().then(() => console.log('Service listening 👍: ', process.env.PORT));
+
+// run cluster
+// runInCluster(bootstrap);
