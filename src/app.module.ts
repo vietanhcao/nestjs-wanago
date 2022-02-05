@@ -13,7 +13,10 @@ import LogsMiddleware from './utils/logs.middleware';
 import HealthModule from './health/health.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
+import { EmailModule } from './email/email.module';
+import { ScheduleModule } from '@nestjs/schedule';
 import FilesModule from './files/files.module';
+import { EmailSchedulingModule } from './emailScheduling/emailSchedule.module';
 
 @Module({
   imports: [
@@ -33,6 +36,10 @@ import FilesModule from './files/files.module';
         AWS_SECRET_ACCESS_KEY: Joi.string().required(),
         AWS_PUBLIC_BUCKET_NAME: Joi.string().required(),
         AWS_PRIVATE_BUCKET_NAME: Joi.string().required(),
+
+        EMAIL_SERVICE: Joi.string().required(),
+        EMAIL_USER: Joi.string().required(),
+        EMAIL_PASSWORD: Joi.string().required(),
 
         JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
         JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
@@ -56,12 +63,14 @@ import FilesModule from './files/files.module';
       },
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot(),
     PostsModule,
     AuthenticationModule,
     CategoriesModule,
     SeriesModule,
     HealthModule,
     FilesModule,
+    EmailSchedulingModule,
   ],
   controllers: [],
   providers: [
