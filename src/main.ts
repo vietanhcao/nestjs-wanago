@@ -7,6 +7,7 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { runInCluster } from './utils/runInCluster';
+import { RedisIoAdapter } from './chat/adapters/redisIoAdapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -28,6 +29,8 @@ async function bootstrap() {
     region: configService.get('AWS_REGION'),
   });
   // await app.listen(3000);
+  app.useWebSocketAdapter(new RedisIoAdapter(app, configService));
+
   await app.listen(process.env.PORT, '0.0.0.0');
   console.log(`SERVER (${process.pid}) IS RUNNING ON `, process.env.PORT);
 }

@@ -7,6 +7,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsResponse,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
@@ -32,6 +33,23 @@ export default class ChatGateway
   async handleDisconnect(socket: Socket) {
     // await this.chatService.removeUserFromSocket(socket);
     console.log(`Client disconnected: ${socket.id}`);
+  }
+
+  @SubscribeMessage('msgToServer')
+  public handleMessage(socket: Socket, payload: any) {
+    return this.server.to(payload.room).emit('msgToClient', payload);
+  }
+
+  @SubscribeMessage('joinRoom')
+  public joinRoom(socket: Socket, room: string): void {
+    socket.join(room);
+    socket.emit('joinedRoom', room);
+  }
+
+  @SubscribeMessage('leaveRoom')
+  public leaveRoom(socket: Socket, room: string): void {
+    socket.leave(room);
+    socket.emit('leftRoom', room);
   }
 
   afterInit(server: Server) {
