@@ -11,7 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
+import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Response } from 'express';

@@ -15,7 +15,7 @@ import UpdatePostDto from './dto/updatePost.dto';
 import PostNotFoundException from './exception/postNotFund.exception';
 import PostsSearchService from './postsSearch.service';
 import { Cache } from 'cache-manager';
-import { GET_POSTS_CACHE_KEY } from './postsCacheKey.constant';
+import { GET_POSTS_CACHE_KEY } from './cache/postsCacheKey.constant';
 
 @Injectable()
 class PostsService {

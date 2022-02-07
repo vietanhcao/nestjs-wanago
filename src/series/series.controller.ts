@@ -13,7 +13,7 @@ import {
 import SeriesService from './series.service';
 import ParamsWithId from '../utils/paramsWithId';
 import SeriesDto from './dto/series.dto';
-import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
+import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
 import { Series } from './series.schema';

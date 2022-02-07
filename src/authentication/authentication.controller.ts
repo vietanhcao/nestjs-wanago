@@ -18,12 +18,12 @@ import RegisterDto from './dto/register.dto';
 import RequestWithUser from './requestWithUser.interface';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import { Response } from 'express';
-import JwtAuthenticationGuard from './jwt-authentication.guard';
+import JwtAuthenticationGuard from './token/jwt-authentication.guard';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 import { User } from 'src/users/user.schema';
 import ParamsWithId from 'src/utils/paramsWithId';
 import UsersService from '../users/users.service';
-import { JwtRefreshGuard } from './jwtRefreshAuthentication.guard';
+import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
 
 @Controller('authentication')
 export class AuthenticationController {

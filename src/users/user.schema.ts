@@ -5,6 +5,8 @@ import { Address, AddressSchema } from './address.schema';
 import { Post } from '../posts/post.schema';
 import { Files, FilesSchema } from '../files/files.schema';
 import { PrivateFile, PrivateFileSchema } from 'src/files/privateFiles.schema';
+import Role from '../authentication/enum/role.enum';
+import Permission from '../authentication/enum/permission.enum';
 
 export type UserDocument = User & Document;
 
@@ -32,6 +34,12 @@ export class User {
   @Prop()
   @Exclude()
   password: string;
+
+  @Prop({ default: Role.User, enum: Role })
+  role: Role;
+
+  @Prop({ default: [], type: [String] })
+  permissions: Permission[];
 
   // refreshToken
   @Prop()

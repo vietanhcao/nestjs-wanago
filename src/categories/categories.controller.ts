@@ -10,13 +10,14 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import CategoriesService from './categories.service';
-import ParamsWithId from '../utils/paramsWithId';
-import CategoryDto from './dto/category.dto';
-import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
+import PermissionGuard from 'src/authentication/guards/permission.guard';
+import PostsPermission from 'src/posts/enum/postsPermission.enum';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
+import ParamsWithId from '../utils/paramsWithId';
+import CategoriesService from './categories.service';
 import { Category } from './category.schema';
+import CategoryDto from './dto/category.dto';
 
 @Controller('categories')
 @UseInterceptors(MongooseClassSerializerInterceptor(Category))
@@ -34,7 +35,7 @@ export default class CategoriesController {
   }
 
   @Post()
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(PermissionGuard(PostsPermission.DeletePost))
   async createCategory(
     @Body() category: CategoryDto,
     @Req() req: RequestWithUser,

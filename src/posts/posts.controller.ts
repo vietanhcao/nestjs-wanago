@@ -22,15 +22,19 @@ import {
 import PostsService from './posts.service';
 import ParamsWithId from '../utils/paramsWithId';
 import PostDto from './dto/post.dto';
-import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
+import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
 import RequestWithUser from 'src/authentication/requestWithUser.interface';
 import { PaginationParams } from 'src/utils/paginationParams';
 import { Post as PostModel } from './post.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 import UpdatePostDto from './dto/updatePost.dto';
 import { ExceptionsLoggerFilter } from 'src/utils/exceptionsLogger.filter';
-import { GET_POSTS_CACHE_KEY } from './postsCacheKey.constant';
-import { HttpCacheInterceptor } from './httpCache.interceptor';
+import { GET_POSTS_CACHE_KEY } from './cache/postsCacheKey.constant';
+import { HttpCacheInterceptor } from './cache/httpCache.interceptor';
+import RoleGuard from 'src/authentication/guards/role.guard';
+import Role from 'src/authentication/enum/role.enum';
+import PermissionGuard from 'src/authentication/guards/permission.guard';
+import PostsPermission from './enum/postsPermission.enum';
 
 @Controller('posts')
 @UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
@@ -38,6 +42,7 @@ export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @UseInterceptors(HttpCacheInterceptor)
+  @UseGuards(RoleGuard(Role.User))
   @CacheKey(GET_POSTS_CACHE_KEY)
   @CacheTTL(120)
   @Get()
@@ -67,7 +72,7 @@ export default class PostsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(PermissionGuard(PostsPermission.DeletePost))
   async deletePost(@Param() { id }: ParamsWithId) {
     return this.postsService.delete(id);
   }
