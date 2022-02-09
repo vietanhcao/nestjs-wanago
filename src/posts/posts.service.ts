@@ -60,7 +60,8 @@ class PostsService {
       .skip(+documentsToSkip)
       .populate('author', '-password -__v') // exclude password
       .populate('categories') //"populate" returning the data of the author along with the post.
-      .populate('series'); //"populate" returning the data of the author along with the post.
+      .populate('series') //"populate" returning the data of the author along with the post.
+      .populate('file'); //"populate" returning the data of the author along with the post.
     if (+limitOfDocuments) {
       findQuery.limit(limitOfDocuments);
     }

@@ -68,7 +68,7 @@ class FilesService {
     return createdFiles.save();
   }
 
-  public async getPrivateFile(fileId: string, ownerId: string) {
+  public async getPrivateFile(fileId: string, ownerId?: string) {
     const s3 = new S3();
 
     const fileInfo = await this.privateFileModel.findById(fileId);

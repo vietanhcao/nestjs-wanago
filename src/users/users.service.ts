@@ -136,7 +136,7 @@ class UsersService {
   }
 
   async getPrivateFile(userId: string, fileId: string) {
-    const file = await this.filesService.getPrivateFile(fileId, userId);
+    const file = await this.filesService.getPrivateFile(fileId);
     if (file.info.owner._id.toString() === userId.toString()) {
       return file;
     }

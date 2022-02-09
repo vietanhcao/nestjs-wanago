@@ -8,6 +8,8 @@ import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { runInCluster } from './utils/runInCluster';
 import { RedisIoAdapter } from './chat/adapters/redisIoAdapter';
+import { AllExceptionsFilter } from './common/exceptions/all-exception.filter';
+import { ValidationExceptionFilter } from './common/exceptions/validation-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -15,8 +17,8 @@ async function bootstrap() {
     logger: getLogLevels(process.env.NODE_ENV === 'production'),
   });
 
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new ExceptionsLoggerFilter(httpAdapter));
+  const httpAdapter = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
   app.use(morgan('tiny'));
   app.use(cookieParser());
@@ -28,6 +30,7 @@ async function bootstrap() {
     secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
     region: configService.get('AWS_REGION'),
   });
+
   // await app.listen(3000);
   app.useWebSocketAdapter(new RedisIoAdapter(app, configService));
 

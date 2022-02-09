@@ -8,6 +8,9 @@ export class PostDto {
   @IsString()
   @IsNotEmpty()
   content: string;
+
+  @IsString()
+  file: string;
 }
 
 export default PostDto;
