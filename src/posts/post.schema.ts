@@ -6,6 +6,7 @@ import { Transform, Type } from 'class-transformer';
 import { Category } from '../categories/category.schema';
 import { Series } from 'src/series/series.schema';
 import { PrivateFile } from 'src/files/privateFiles.schema';
+import { Comments } from 'src/comment/comment.schema';
 // import { Series } from '../series/series.schema';
 
 export type PostDocument = Post & Document;
@@ -49,6 +50,13 @@ export class Post {
   })
   @Type(() => Series)
   series?: Series;
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: Comments.name }], // like many to many relationship Category have many posts
+    ref: Comments.name,
+  })
+  @Type(() => Comments)
+  comments?: Comments[];
 }
 
 const PostSchema = SchemaFactory.createForClass(Post);
