@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Series, SeriesDocument } from './series.schema';
 import { NotFoundException } from '@nestjs/common';
 import SeriesDto from './dto/series.dto';
-import { User } from '../users/user.schema';
+import { User } from '../users/schema/user.schema';
 
 @Injectable()
 class SeriesService {

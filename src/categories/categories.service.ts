@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Category, CategoryDocument } from './category.schema';
 import { NotFoundException } from '@nestjs/common';
 import CategoryDto from './dto/category.dto';
-import { User } from '../users/user.schema';
+import { User } from '../users/schema/user.schema';
 
 @Injectable()
 class CategoriesService {

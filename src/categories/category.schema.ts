@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
 import { Transform, Type } from 'class-transformer';
 import * as mongoose from 'mongoose';
-import { User } from 'src/users/user.schema';
+import { User } from 'src/users/schema/user.schema';
 
 export type CategoryDocument = Category & Document;
 

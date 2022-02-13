@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { NotFoundException } from '@nestjs/common';
-import { User } from '../users/user.schema';
+import { User } from '../users/schema/user.schema';
 import CommentDto from './dto/comment.dto';
 import UpdateCommentDto from './dto/updateComment.dto';
 import { Comments, CommentsDocument } from './comment.schema';
@@ -14,7 +14,7 @@ export class CommentService {
   ) {}
 
   async findAllByPostId(postId: string) {
-    return this.commentsModel.find({ postId });
+    return this.commentsModel.find({ postId }, { owner: 0, postId: 0 });
   }
 
   // async findOne(id: string) {

@@ -9,7 +9,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './post.schema';
 import { PostDto } from './dto/post.dto';
-import { User } from '../users/user.schema';
+import { User } from '../users/schema/user.schema';
 import * as mongoose from 'mongoose';
 import UpdatePostDto from './dto/updatePost.dto';
 import PostNotFoundException from './exception/postNotFund.exception';
@@ -85,7 +85,7 @@ class PostsService {
       ...postData,
       author,
     });
-    await createdPost.populate(['categories', 'series']);
+    await createdPost.populate(['categories', 'series']); // query include execPopulate method show data categories and series
     const newPost = await createdPost.save();
     // hide elastic search
     // this.postsSearchService.indexPost(newPost);

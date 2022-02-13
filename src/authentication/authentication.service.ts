@@ -125,7 +125,7 @@ export class AuthenticationService {
   }
 
   public deleteUserById(id: string) {
-    return this.usersService.delete(id);
+    return this.usersService.deleteWithoutTransactions(id);
   }
 
   public async getUserFromAuthenticationToken(token: string) {

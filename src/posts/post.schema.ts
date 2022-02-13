@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { User } from '../users/user.schema';
+import { User } from '../users/schema/user.schema';
 import { Transform, Type } from 'class-transformer';
 import { Category } from '../categories/category.schema';
 import { Series } from 'src/series/series.schema';

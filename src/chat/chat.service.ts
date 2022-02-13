@@ -5,7 +5,7 @@ import { WsException } from '@nestjs/websockets';
 import { Message, MessageDocument } from './message.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from 'src/users/user.schema';
+import { User } from 'src/users/schema/user.schema';
 import { AuthenticationService } from 'src/authentication/authentication.service';
 
 @Injectable()

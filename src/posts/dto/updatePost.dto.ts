@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
-import { User } from '../../users/user.schema';
+import { User } from '../../users/schema/user.schema';
 import { Exclude, Type } from 'class-transformer';
 import { Category } from '../../categories/category.schema';
 import { Series } from '../../series/series.schema';

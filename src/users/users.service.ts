@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UserDocument, User } from './user.schema';
+import { UserDocument, User } from './schema/user.schema';
 import CreateUserDto from './dto/createUser.dto';
 import PostsService from '../posts/posts.service';
 import FilesService from '../files/files.service';
@@ -170,6 +170,19 @@ class UsersService {
     //   },
     // });
     return createdUser.save();
+  }
+  async deleteWithoutTransactions(userId: string) {
+    const user = await this.userModel
+      .findByIdAndDelete(userId)
+      .populate('posts');
+    if (!user) {
+      throw new NotFoundException();
+    }
+    const posts = user.posts;
+
+    return this.postsService.deleteMany(
+      posts.map((post) => post._id.toString()),
+    );
   }
 
   async delete(userId: string) {

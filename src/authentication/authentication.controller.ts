@@ -20,10 +20,12 @@ import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import { Response } from 'express';
 import JwtAuthenticationGuard from './token/jwt-authentication.guard';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
-import { User } from 'src/users/user.schema';
+import { User } from 'src/users/schema/user.schema';
 import ParamsWithId from 'src/utils/paramsWithId';
 import UsersService from '../users/users.service';
 import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
+import Role from './enum/role.enum';
+import RoleGuard from './guards/role.guard';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -140,6 +142,8 @@ export class AuthenticationController {
     return user;
   }
 
+  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(RoleGuard(Role.Admin))
   @Delete(':id')
   async deletePost(@Param() { id }: ParamsWithId) {
     return this.authenticationService.deleteUserById(id);
