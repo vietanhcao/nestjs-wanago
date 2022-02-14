@@ -17,6 +17,7 @@ services:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+    user: root
     restart: always
     networks:
       - redis
