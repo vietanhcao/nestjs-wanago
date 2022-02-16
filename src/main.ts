@@ -19,6 +19,7 @@ async function bootstrap() {
 
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+  app.setGlobalPrefix('/api');
 
   app.use(morgan('tiny'));
   app.use(cookieParser());
