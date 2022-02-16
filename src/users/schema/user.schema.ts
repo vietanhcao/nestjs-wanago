@@ -20,7 +20,7 @@ export class User {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
 
-  @Prop({ unique: true, lowercase: true }) // unique
+  @Prop({ require: true, unique: true, lowercase: true }) // unique
   email: string;
 
   @Prop()
@@ -31,14 +31,14 @@ export class User {
 
   fullName: string;
 
-  @Prop()
+  @Prop({ require: true })
   @Exclude()
   password: string;
 
   @Prop({ default: Role.User, enum: Role })
   role: Role;
 
-  @Prop({ default: [], type: [String] })
+  @Prop({ default: ['DeletePost'], type: [String] })
   permissions: Permission[];
 
   // refreshToken
