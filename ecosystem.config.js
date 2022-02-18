@@ -20,10 +20,10 @@ module.exports = {
       host: '188.166.240.52',
       ref: 'origin/master',
       repo: 'git@github.com:vietanhcao/nestjs-wanago.git',
-      path: '/var/www/production',
+      path: '/root/apps/nestjs-wanago',
       'pre-deploy-local': '',
       'post-deploy':
-        'npm install && pm2 reload ecosystem.config.js --env production',
+        'cd /root/apps/nestjs-wanago && NODE_ENV=production npm run --production=false;npm run build;pm2 startOrReload ecosystem.config.js',
       'pre-setup': '',
     },
   },
