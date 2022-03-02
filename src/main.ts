@@ -1,21 +1,31 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import * as cookieParser from 'cookie-parser';
-import { AppModule } from './app.module';
-import getLogLevels from './utils/getLogLevels';
-import * as morgan from 'morgan';
-import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
-import { config } from 'aws-sdk';
+import { ValidationError, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { runInCluster } from './utils/runInCluster';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { config } from 'aws-sdk';
+import * as cookieParser from 'cookie-parser';
+import * as morgan from 'morgan';
+import { AppModule } from './app.module';
 import { RedisIoAdapter } from './chat/adapters/redisIoAdapter';
 import { AllExceptionsFilter } from './common/exceptions/all-exception.filter';
-import { ValidationExceptionFilter } from './common/exceptions/validation-exception.filter';
+import { ValidationException } from './common/exceptions/validation-exception.filter';
+import getLogLevels from './utils/getLogLevels';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     //We don’t use the ConfigService above to read the environment variables because it isn’t initialized yet.
     logger: getLogLevels(process.env.NODE_ENV === 'production'),
   });
+
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     whitelist: true,
+  //     skipMissingProperties: false,
+  //     forbidNonWhitelisted: true,
+  //     transform: true,
+  //     exceptionFactory: (errors: ValidationError[]) =>
+  //       new ValidationException(errors),
+  //   }),
+  // );
 
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));

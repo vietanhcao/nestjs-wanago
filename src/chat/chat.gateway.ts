@@ -16,6 +16,7 @@ import { ChatService } from './chat.service';
   cors: {
     origin: '*',
   },
+  namespace: 'chat',
 })
 export default class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -37,7 +38,7 @@ export default class ChatGateway
 
   @SubscribeMessage('msgToServer')
   public handleMessage(socket: Socket, payload: any) {
-    return this.server.to(payload.room).emit('msgToClient', payload);
+    return socket.to(payload.room).emit('msgToClient', payload);
   }
 
   @SubscribeMessage('joinRoom')
@@ -63,8 +64,7 @@ export default class ChatGateway
   ) {
     const author = await this.chatService.getUserFromSocket(socket);
     const message = await this.chatService.saveMessage(content, author);
-
-    this.server.sockets.emit('receive_message', message);
+    socket.emit('receive_message', message);
 
     return message;
   }
