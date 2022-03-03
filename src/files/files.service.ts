@@ -16,7 +16,11 @@ class FilesService {
     private readonly configService: ConfigService,
   ) {}
 
-  async uploadPublicFile(dataBuffer: Buffer, filename: string) {
+  async uploadPublicFile(
+    dataBuffer: Buffer,
+    filename: string,
+    ownerId?: string,
+  ) {
     const s3 = new S3();
     const uploadResult = await s3
       .upload({
@@ -29,6 +33,7 @@ class FilesService {
     const createdFiles = new this.fileModel({
       key: uploadResult.Key,
       url: uploadResult.Location,
+      owner: ownerId || null,
     });
     return createdFiles.save();
     // return newFile;

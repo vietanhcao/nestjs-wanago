@@ -41,8 +41,12 @@ import PostsPermission from './enum/postsPermission.enum';
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @UseInterceptors(HttpCacheInterceptor)
+  /**
+   * Lấy ra danh sách các bài viết có trong cache
+   * @public: có thể được xem bởi mọi người
+   */
   @UseGuards(RoleGuard(Role.User))
+  @UseInterceptors(HttpCacheInterceptor)
   @CacheKey(GET_POSTS_CACHE_KEY)
   @CacheTTL(120)
   @Get()
@@ -57,6 +61,32 @@ export default class PostsController {
       // return this.postsService.searchForPosts(search, skip, limit);
     }
     return this.postsService.findAll(skip, limit, startId, searchQuery);
+  }
+
+  /**
+   * @private: chỉ có thể được xem bởi người đó
+   */
+  @Get('me')
+  @UseGuards(RoleGuard(Role.User))
+  @UseGuards(JwtAuthenticationGuard)
+  @UsePipes(new ValidationPipe({ transform: true })) // transform: true to active @Type(() => Number)
+  async getAllPostsByUser(
+    @Query() { skip, limit, startId }: PaginationParams,
+    @Query('searchQuery') searchQuery: string,
+    @Query('search') search: string,
+    @Req() req: RequestWithUser,
+  ) {
+    if (search) {
+      // hide elastic search
+      // return this.postsService.searchForPosts(search, skip, limit);
+    }
+    return this.postsService.findAll(
+      skip,
+      limit,
+      startId,
+      searchQuery,
+      req.user,
+    );
   }
 
   @Get(':id')

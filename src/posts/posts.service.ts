@@ -1,4 +1,3 @@
-import { Model, FilterQuery } from 'mongoose';
 import {
   CACHE_MANAGER,
   Inject,
@@ -7,24 +6,30 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Post, PostDocument } from './post.schema';
-import { PostDto } from './dto/post.dto';
-import { User } from '../users/schema/user.schema';
+import { Cache } from 'cache-manager';
 import * as mongoose from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
+import ClientQuery from 'src/common/client-query';
+import Resolve from 'src/common/helpers/Resolve';
+import { User } from '../users/schema/user.schema';
+import { GET_POSTS_CACHE_KEY } from './cache/postsCacheKey.constant';
+import { PostDto } from './dto/post.dto';
 import UpdatePostDto from './dto/updatePost.dto';
 import PostNotFoundException from './exception/postNotFund.exception';
+import { Post, PostDocument } from './post.schema';
 import PostsSearchService from './postsSearch.service';
-import { Cache } from 'cache-manager';
-import { GET_POSTS_CACHE_KEY } from './cache/postsCacheKey.constant';
 
 @Injectable()
 class PostsService {
   private readonly logger = new Logger(PostsService.name);
+  public postClientQuery: ClientQuery<PostDocument>;
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     private readonly postsSearchService: PostsSearchService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {}
+  ) {
+    this.postClientQuery = new ClientQuery(this.postModel);
+  }
 
   async clearCache() {
     const keys: string[] = await this.cacheManager.store.keys();
@@ -35,11 +40,18 @@ class PostsService {
     });
   }
 
+  /**
+   * Lấy ra danh sách các bài viết có trong cache
+   * @param skip
+   * @param limit
+   * @param startId
+   */
   async findAll(
     documentsToSkip = 0,
     limitOfDocuments?: number,
     startId?: string,
     searchQuery?: string,
+    user?: User,
   ) {
     const filters: FilterQuery<PostDocument> = startId
       ? {
@@ -54,21 +66,46 @@ class PostsService {
         $search: searchQuery,
       };
     }
-    const findQuery = this.postModel
-      .find(filters)
-      .sort({ _id: 1 })
-      .skip(+documentsToSkip)
-      .populate('author', '-password -__v') // exclude password
-      .populate('categories') //"populate" returning the data of the author along with the post.
-      .populate('series') //"populate" returning the data of the author along with the post.
-      .populate('file'); //"populate" returning the data of the author along with the post.
-    if (+limitOfDocuments) {
-      findQuery.limit(limitOfDocuments);
-    }
-    const results = await findQuery;
-    const count = await this.postModel.count();
 
-    return { results, count };
+    if (user) {
+      filters.author = user;
+    }
+    // const findQuery = this.postModel
+    //   .find(filters)
+    //   .sort({ _id: 1 })
+    //   .skip(+documentsToSkip)
+    //   .populate([
+    //     { path: 'author', select: '-password -__v' }, // exclude password
+    //     { path: 'categories' }, //"populate" returning the data of the author along with the post.
+    //     { path: 'series' },
+    //     { path: 'file' },
+    //   ])
+    //   .lean(); // to skip instantiating a full Mongoose document.
+    // if (+limitOfDocuments) {
+    //   findQuery.limit(limitOfDocuments);
+    // }
+    const { result, pagination } = await this.postClientQuery.findForQuery(
+      {
+        filter: filters,
+        limit: limitOfDocuments,
+        offset: documentsToSkip,
+        sort: { _id: 1 },
+      },
+      {
+        populate: [
+          { path: 'author', select: '-password -__v' }, // exclude password
+          { path: 'categories' }, //"populate" returning the data of the author along with the post.
+          { path: 'series' },
+          { path: 'file' },
+        ],
+        queryMongoose: filters,
+      },
+    );
+    // const results = await response;
+    // const count = await this.postModel.find(filters).countDocuments();
+    return Resolve.ok(0, 'Success', result, {
+      pagination,
+    });
   }
 
   async findOne(id: string) {

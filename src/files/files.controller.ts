@@ -42,6 +42,25 @@ export class FilesController {
     );
   }
 
+  @Post('upload/image-public')
+  @UseGuards(JwtAuthenticationGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: imageFileFilter,
+    }),
+  )
+  async uploadImagePublic(
+    @Req() request: RequestWithUser,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) throw new BadRequestException('Upfile lỗi!');
+    return this.filesService.uploadPublicFile(
+      file.buffer,
+      file.originalname,
+      request.user.id,
+    );
+  }
+
   @Get('files/:id')
   // @UseGuards(JwtAuthenticationGuard)
   async getPrivateFile(
