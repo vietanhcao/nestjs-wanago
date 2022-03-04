@@ -55,6 +55,7 @@ export default class PostsController {
     @Query() { skip, limit, startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
     @Query('search') search: string,
+    @Query() query,
   ) {
     if (search) {
       // hide elastic search

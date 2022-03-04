@@ -46,7 +46,7 @@ async function bootstrap() {
   app.useWebSocketAdapter(new RedisIoAdapter(app, configService));
 
   await app.listen(process.env.PORT, '0.0.0.0');
-  console.log(`SERVER (${process.pid}) IS RUNNING ON `, process.env.PORT);
+  // console.log(`SERVER (${process.pid}) IS RUNNING ON `, process.env.PORT);
 }
 
 if (isNaN(parseInt(process.env.PORT))) {
