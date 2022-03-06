@@ -11,6 +11,7 @@ export const imageFileFilter = (req, file, callback) => {
       false,
     );
   }
+  // if (file.size > 100) return callback(new Error('too large'), false);
   callback(null, true);
 };
 

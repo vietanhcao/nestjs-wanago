@@ -28,6 +28,9 @@ export class FilesController {
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: imageFileFilter,
+      limits: {
+        fileSize: 1 * 1e6, // 1 MB
+      },
     }),
   )
   async uploadImage(
@@ -47,6 +50,9 @@ export class FilesController {
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: imageFileFilter,
+      limits: {
+        fileSize: 1 * 1e6, // 1 MB
+      },
     }),
   )
   async uploadImagePublic(
