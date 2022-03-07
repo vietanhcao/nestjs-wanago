@@ -6,13 +6,17 @@ class LogsMiddleware implements NestMiddleware {
   private readonly logger = new Logger('HTTP');
 
   use(request: Request, response: Response, next: NextFunction) {
-    response.on('finish', () => {
-      const { ip, method, originalUrl } = request;
-      const { statusCode, statusMessage } = response;
-      const userAgent = request.get('user-agent') || '';
-      const contentLength = response.get('content-length');
+    const { ip, method, originalUrl, hostname } = request;
+    const userAgent = request.get('user-agent') || '';
+    const startAt = process.hrtime();
 
-      const message = `${method} ${originalUrl} ${statusCode} ${statusMessage} ${contentLength} - ${userAgent} ${ip}`;
+    response.on('finish', () => {
+      const { statusCode, statusMessage } = response;
+      const contentLength = response.get('content-length');
+      const diff = process.hrtime(startAt);
+      const responseTime = diff[0] * 1e3 + diff[1] * 1e-6;
+
+      const message = `${method} ${originalUrl} ${statusCode} ${statusMessage} ${responseTime} ms ${contentLength} - ${userAgent} ${ip} `;
 
       if (statusCode >= 500) {
         return this.logger.error(message);

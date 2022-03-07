@@ -18,6 +18,7 @@ import { Express, Response } from 'express';
 import ParamsWithId from '../utils/paramsWithId';
 import FilesService from './files.service';
 import { imageFileFilter } from './helpers/file_upload.utils';
+import { dataSelectCity } from 'src/common/dataDefault';
 
 @Controller('resource')
 export class FilesController {
@@ -78,11 +79,10 @@ export class FilesController {
     file.stream.pipe(res);
   }
 
-  // @Get('files')
-  // @UseGuards(JwtAuthenticationGuard)
-  // async getAllPrivateFiles(@Req() request: RequestWithUser) {
-  //   return this.usersService.getAllPrivateFiles(request.user.id);
-  // }
+  @Get('select-city')
+  async getSelectCity() {
+    return dataSelectCity;
+  }
 
   // @Get('files/:id')
   // @UseGuards(JwtAuthenticationGuard)
