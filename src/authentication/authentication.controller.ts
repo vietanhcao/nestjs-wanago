@@ -12,6 +12,8 @@ import {
   UseInterceptors,
   Param,
   Delete,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';

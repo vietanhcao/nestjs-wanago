@@ -19,6 +19,7 @@ import FilesModule from './files/files.module';
 import { EmailSchedulingModule } from './emailScheduling/emailSchedule.module';
 import { ChatModule } from './chat/chat.module';
 import { CommentModule } from './comment/comment.module';
+import { LogsModule } from './logs/logs.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { CommentModule } from './comment/comment.module';
     ChatModule,
     EmailSchedulingModule,
     CommentModule,
+    LogsModule,
   ],
   controllers: [],
   providers: [
