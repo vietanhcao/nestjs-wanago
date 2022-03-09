@@ -93,27 +93,33 @@ class PostsService {
       },
       {
         populate: [
-          { path: 'author', select: '-password -__v' }, // exclude password
-          { path: 'categories' }, //"populate" returning the data of the author along with the post.
-          { path: 'series' },
+          { path: 'author', select: 'lastName firstName -_id' }, // exclude password
+          // { path: 'categories' }, //"populate" returning the data of the author along with the post.
+          // { path: 'series' },
           { path: 'file' },
         ],
         queryMongoose: filters,
+        omit: ['categories', 'title', '__v', 'createdAt', 'updatedAt'],
       },
     );
     // const results = await response;
     // const count = await this.postModel.find(filters).countDocuments();
-    return Resolve.ok(0, 'Success', result, {
-      pagination,
-    });
+    return { result, pagination };
   }
 
   async findOne(id: string) {
-    const post = await this.postModel.findById(id);
+    const post = await this.postModel
+      .findById(id)
+      .select('_id file content')
+      .populate([
+        { path: 'author', select: 'lastName firstName -_id' }, // exclude password
+        { path: 'file' },
+      ]);
     if (!post) {
       this.logger.warn('Tried to access a post that does not exist');
       throw new PostNotFoundException(id);
     }
+    // post.id = post._id.toString();
     return post;
   }
 
@@ -172,10 +178,10 @@ class PostsService {
       new: true,
     });
     const updatedPost = await this.findOne(id);
-    if (updatedPost) {
-      await this.postsSearchService.update(updatedPost);
-      return updatedPost;
-    }
+    // if (updatedPost) {
+    //   await this.postsSearchService.update(updatedPost);
+    //   return updatedPost;
+    // }
     await this.clearCache();
     throw new PostNotFoundException(id);
   }
@@ -193,10 +199,10 @@ class PostsService {
     if (!post) {
       throw new NotFoundException();
     }
-    if (post) {
-      await this.postsSearchService.update(post);
-      return post;
-    }
+    // if (post) {
+    //   await this.postsSearchService.update(post);
+    //   return post;
+    // }
     await this.clearCache();
     return post;
   }

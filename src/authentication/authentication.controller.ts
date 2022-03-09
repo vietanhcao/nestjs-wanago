@@ -28,6 +28,7 @@ import UsersService from '../users/users.service';
 import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
 import Role from './enum/role.enum';
 import RoleGuard from './guards/role.guard';
+import Resolve from 'src/common/helpers/Resolve';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -39,9 +40,12 @@ export class AuthenticationController {
   //dto validation
   @Post('register')
   @UsePipes(ValidationPipe)
-  @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
+  // @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
   async register(@Body() registrationData: RegisterDto) {
-    return this.authenticationService.register(registrationData);
+    const response = await this.authenticationService.register(
+      registrationData,
+    );
+    return Resolve.ok(200, 'Success');
   }
 
   /**
@@ -60,7 +64,7 @@ export class AuthenticationController {
     //remove password
     user.password = undefined;
     // response cookie and token
-    return response.json({ user, token });
+    return response.json(Resolve.ok(200, 'Success', { user, token }));
   }
 
   /**
@@ -117,6 +121,7 @@ export class AuthenticationController {
       'Set-Cookie',
       this.authenticationService.getCookiesForLogOut(),
     );
+    return Resolve.ok(200, 'success');
   }
 
   /**
@@ -132,22 +137,23 @@ export class AuthenticationController {
       'Set-Cookie',
       this.authenticationService.getCookieForLogOut(),
     );
-    return response.sendStatus(200);
+    return response.json(Resolve.ok(200, 'success'));
   }
 
   @UseGuards(JwtAuthenticationGuard)
   @Get()
-  @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
+  // @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
     // user.password = undefined;
-    return user;
+    return Resolve.ok(200, 'Success', user);
   }
 
   @UseGuards(JwtAuthenticationGuard)
   @UseGuards(RoleGuard(Role.Admin))
   @Delete(':id')
   async deletePost(@Param() { id }: ParamsWithId) {
-    return this.authenticationService.deleteUserById(id);
+    await this.authenticationService.deleteUserById(id);
+    return Resolve.ok(200, 'Success');
   }
 }

@@ -16,6 +16,8 @@ import RequestWithUser from '../authentication/requestWithUser.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Response } from 'express';
 import ParamsWithId from '../utils/paramsWithId';
+import { imageFileFilter } from 'src/files/helpers/file_upload.utils';
+import Resolve from 'src/common/helpers/Resolve';
 
 @Controller('users')
 export class UsersController {
@@ -28,11 +30,12 @@ export class UsersController {
     @Req() request: RequestWithUser,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usersService.addPrivateFile(
+    const response = await this.usersService.addPrivateFile(
       file.buffer,
       file.originalname,
       request.user.id,
     );
+    return Resolve.ok(0, 'Success', response);
   }
 
   @Get('files')
@@ -54,21 +57,31 @@ export class UsersController {
 
   @Post('avatar')
   @UseGuards(JwtAuthenticationGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: imageFileFilter,
+      limits: {
+        fileSize: 1 * 1e6, // 1 MB
+      },
+    }),
+  )
   async addAvatar(
     @Req() request: RequestWithUser,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usersService.addAvatar(
+    const response = await this.usersService.addAvatar(
       request.user.id,
       file.buffer,
       file.originalname,
     );
+
+    return Resolve.ok(0, 'Success', response);
   }
 
   @Delete('avatar')
   @UseGuards(JwtAuthenticationGuard)
   async deleteAvatar(@Req() request: RequestWithUser) {
-    return this.usersService.deleteAvatar(request.user.id);
+    await this.usersService.deleteAvatar(request.user.id);
+    return Resolve.ok(0, 'Success');
   }
 }

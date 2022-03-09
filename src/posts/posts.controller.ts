@@ -35,9 +35,10 @@ import RoleGuard from 'src/authentication/guards/role.guard';
 import Role from 'src/authentication/enum/role.enum';
 import PermissionGuard from 'src/authentication/guards/permission.guard';
 import PostsPermission from './enum/postsPermission.enum';
+import Resolve from 'src/common/helpers/Resolve';
 
 @Controller('posts')
-@UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
+// @UseInterceptors(MongooseClassSerializerInterceptor(PostModel)) //enable to execute class-transformer
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
@@ -46,9 +47,9 @@ export default class PostsController {
    * @public: có thể được xem bởi mọi người
    */
   @UseGuards(RoleGuard(Role.User))
-  @UseInterceptors(HttpCacheInterceptor)
-  @CacheKey(GET_POSTS_CACHE_KEY)
-  @CacheTTL(120)
+  // @UseInterceptors(HttpCacheInterceptor)
+  // @CacheKey(GET_POSTS_CACHE_KEY)
+  // @CacheTTL(120)
   @Get()
   @UsePipes(new ValidationPipe({ transform: true })) // transform: true to active @Type(() => Number)
   async getAllPosts(
@@ -61,7 +62,13 @@ export default class PostsController {
       // hide elastic search
       // return this.postsService.searchForPosts(search, skip, limit);
     }
-    return this.postsService.findAll(skip, limit, startId, searchQuery);
+    const { result, pagination } = await this.postsService.findAll(
+      skip,
+      limit,
+      startId,
+      searchQuery,
+    );
+    return Resolve.ok(0, 'Success', result, { pagination });
   }
 
   /**
@@ -81,37 +88,42 @@ export default class PostsController {
       // hide elastic search
       // return this.postsService.searchForPosts(search, skip, limit);
     }
-    return this.postsService.findAll(
+    const { result, pagination } = await this.postsService.findAll(
       skip,
       limit,
       startId,
       searchQuery,
       req.user,
     );
+    return Resolve.ok(0, 'Success', result, { pagination });
   }
 
   @Get(':id')
   @UseFilters(ExceptionsLoggerFilter) // catch all exception
   async getPost(@Param() { id }: ParamsWithId) {
-    return this.postsService.findOne(id);
+    const response = await this.postsService.findOne(id);
+    return Resolve.ok(0, 'Success', response);
   }
 
   @Post()
   @UseGuards(JwtAuthenticationGuard)
   async createPost(@Body() post: PostDto, @Req() req: RequestWithUser) {
-    return this.postsService.create(post, req.user);
+    await this.postsService.create(post, req.user);
+    return Resolve.ok(0, 'Success');
   }
 
   @Delete(':id')
   @UseGuards(PermissionGuard(PostsPermission.DeletePost))
   async deletePost(@Param() { id }: ParamsWithId) {
-    return this.postsService.delete(id);
+    await this.postsService.delete(id);
+    return Resolve.ok(0, 'Success');
   }
 
   @Put(':id') // meaning update all filed
   @UseGuards(JwtAuthenticationGuard)
   async updatePost(@Param() { id }: ParamsWithId, @Body() post: UpdatePostDto) {
-    return this.postsService.update(id, post);
+    await this.postsService.update(id, post);
+    return Resolve.ok(0, 'Success');
   }
 
   @Patch(':id') // meaning update partial filed
@@ -120,6 +132,7 @@ export default class PostsController {
     @Param() { id }: ParamsWithId,
     @Body() post: UpdatePostDto,
   ) {
-    return this.postsService.update(id, post);
+    await this.postsService.update(id, post);
+    return Resolve.ok(0, 'Success');
   }
 }

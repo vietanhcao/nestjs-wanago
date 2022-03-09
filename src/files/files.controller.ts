@@ -19,6 +19,7 @@ import ParamsWithId from '../utils/paramsWithId';
 import FilesService from './files.service';
 import { imageFileFilter } from './helpers/file_upload.utils';
 import { dataSelectCity } from 'src/common/dataDefault';
+import Resolve from 'src/common/helpers/Resolve';
 
 @Controller('resource')
 export class FilesController {
@@ -39,11 +40,12 @@ export class FilesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (!file) throw new BadRequestException('Upfile lỗi!');
-    return this.filesService.uploadPrivateFile(
+    const response = await this.filesService.uploadPrivateFile(
       file.buffer,
       file.originalname,
       request.user.id,
     );
+    return Resolve.ok(0, 'Success', response);
   }
 
   @Post('upload/image-public')
@@ -61,11 +63,12 @@ export class FilesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (!file) throw new BadRequestException('Upfile lỗi!');
-    return this.filesService.uploadPublicFile(
+    const response = await this.filesService.uploadPublicFile(
       file.buffer,
       file.originalname,
       request.user.id,
     );
+    return Resolve.ok(0, 'Success', response);
   }
 
   @Get('files/:id')
@@ -81,7 +84,7 @@ export class FilesController {
 
   @Get('select-city')
   async getSelectCity() {
-    return dataSelectCity;
+    return Resolve.ok(0, 'Success', dataSelectCity);
   }
 
   // @Get('files/:id')

@@ -58,13 +58,15 @@ class UsersService {
   }
 
   async getByEmail(email: string) {
-    const user = await this.userModel.findOne({ email }).populate({
-      path: 'posts',
-      populate: {
-        path: 'categories',
-      },
-    });
-
+    // const user = await this.userModel.findOne({ email }).populate({
+    //   path: 'posts',
+    //   populate: {
+    //     path: 'categories',
+    //   },
+    // });
+    const user = await this.userModel
+      .findOne({ email })
+      .select('lastName firstName password avatar role');
     if (!user) {
       throw new NotFoundException();
     }
@@ -74,16 +76,18 @@ class UsersService {
 
   async getById(id: number) {
     // nested populate
-    const user = await this.userModel.findById(id).populate([
-      {
-        path: 'posts',
-        populate: {
-          path: 'categories',
-        },
-      },
-      'files',
-    ]);
-
+    // const user = await this.userModel.findById(id).populate([
+    //   {
+    //     path: 'posts',
+    //     populate: {
+    //       path: 'categories',
+    //     },
+    //   },
+    //   'files',
+    // ]);
+    const user = await this.userModel
+      .findById(id)
+      .select('lastName firstName password avatar role');
     if (!user) {
       throw new NotFoundException();
     }
@@ -95,6 +99,7 @@ class UsersService {
     const avatar = await this.filesService.uploadPublicFile(
       imageBuffer,
       filename,
+      `${userId}`,
     );
     const userData = {
       avatar,
@@ -145,9 +150,9 @@ class UsersService {
 
   async getAllPrivateFiles(userId: number) {
     const userWithFiles = await this.getById(userId);
-    if (userWithFiles) {
+    if (userWithFiles.files) {
       return Promise.all(
-        userWithFiles.files.map(async (file) => {
+        userWithFiles.files?.map(async (file) => {
           const url = await this.filesService.generatePresignedUrl(file.key);
           return {
             // ...file,

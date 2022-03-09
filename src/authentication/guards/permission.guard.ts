@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 import RequestWithUser from '../requestWithUser.interface';
 import JwtAuthenticationGuard from '../token/jwt-authentication.guard';
 import Permission from 'src/authentication/enum/permission.enum';
+import Role from '../enum/role.enum';
 
 const PermissionGuard = (permission: Permission): Type<CanActivate> => {
   class PermissionGuardMixin extends JwtAuthenticationGuard {
@@ -10,7 +11,10 @@ const PermissionGuard = (permission: Permission): Type<CanActivate> => {
 
       const request = context.switchToHttp().getRequest<RequestWithUser>();
       const user = request.user;
-      return user?.permissions.includes(permission);
+      if (user?.role === Role.Admin) {
+        return true;
+      }
+      return user?.permissions?.includes(permission);
     }
   }
 
