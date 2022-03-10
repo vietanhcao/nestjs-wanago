@@ -76,7 +76,6 @@ export default class PostsController {
    */
   @Get('me')
   @UseGuards(RoleGuard(Role.User))
-  @UseGuards(JwtAuthenticationGuard)
   @UsePipes(new ValidationPipe({ transform: true })) // transform: true to active @Type(() => Number)
   async getAllPostsByUser(
     @Query() { skip, limit, startId }: PaginationParams,

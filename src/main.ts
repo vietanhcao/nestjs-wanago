@@ -8,6 +8,7 @@ import { AppModule } from './app.module';
 import { RedisIoAdapter } from './chat/adapters/redisIoAdapter';
 import { AllExceptionsFilter } from './common/exceptions/all-exception.filter';
 import { ValidationException } from './common/exceptions/validation-exception.filter';
+import { ExcludeNullInterceptor } from './utils/excludeNull.interceptor';
 import getLogLevels from './utils/getLogLevels';
 
 async function bootstrap() {
