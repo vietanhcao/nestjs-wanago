@@ -23,7 +23,7 @@ module.exports = {
       path: '/root/apps/nestjs-wanago',
       'pre-deploy-local': '',
       'post-deploy':
-        'cd /root/apps/nestjs-wanago && NODE_ENV=production npm run --production=false;npm run build;pm2 startOrReload ecosystem.config.js',
+        'cd /root/apps/nestjs-wanago && NODE_ENV=production npm run --production=false;npm install && npm run build;pm2 startOrReload ecosystem.config.js',
       'pre-setup': '',
       env: {
         NODE_ENV: 'production',
