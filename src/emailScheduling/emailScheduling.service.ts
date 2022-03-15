@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import EmailService from '../email/email.service';
+import { EmailService } from '../email/email.service';
 import EmailScheduleDto from './dto/emailSchedule.dto';
 import {
   Cron,
@@ -21,9 +21,9 @@ export default class EmailSchedulingService {
     const date = new Date(emailSchedule.date);
     const job = new CronJob(date, () => {
       this.emailService.sendMail({
-        to: emailSchedule.recipient,
+        recipient: emailSchedule.recipient,
         subject: emailSchedule.subject,
-        text: emailSchedule.content,
+        content: emailSchedule.content,
       });
     });
 

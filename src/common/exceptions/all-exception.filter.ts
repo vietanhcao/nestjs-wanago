@@ -22,13 +22,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
     const responseBody = {
       statusCode: httpStatus,
       resCode: httpStatus,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
       message: exception['message'] || null,
+      validations: exception['validationErrors'] || null,
     };
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);

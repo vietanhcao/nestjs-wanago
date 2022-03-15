@@ -20,6 +20,8 @@ import { EmailSchedulingModule } from './emailScheduling/emailSchedule.module';
 import { ChatModule } from './chat/chat.module';
 import { CommentModule } from './comment/comment.module';
 import { LogsModule } from './logs/logs.module';
+import { BullModule } from '@nestjs/bull';
+import { OptimizeModule } from './optimize/optimize.module';
 
 @Module({
   imports: [
@@ -50,6 +52,22 @@ import { LogsModule } from './logs/logs.module';
         JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
       }),
     }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: Number(configService.get('REDIS_PORT')),
+        },
+        defaultJobOptions: {
+          // removeOnComplete: true,
+          // removeOnFail: true,
+          backoff: 10000,
+          attempts: 2 * 60,
+        },
+      }),
+      inject: [ConfigService],
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
 
@@ -77,6 +95,7 @@ import { LogsModule } from './logs/logs.module';
     EmailSchedulingModule,
     CommentModule,
     LogsModule,
+    OptimizeModule,
   ],
   controllers: [],
   providers: [

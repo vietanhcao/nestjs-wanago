@@ -18,7 +18,6 @@ export class ValidationExceptionFilter implements ExceptionFilter {
   catch(exception: ValidationException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
-
     return {
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       resCode: HttpStatus.UNPROCESSABLE_ENTITY,

@@ -7,7 +7,11 @@ import * as morgan from 'morgan';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './chat/adapters/redisIoAdapter';
 import { AllExceptionsFilter } from './common/exceptions/all-exception.filter';
-import { ValidationException } from './common/exceptions/validation-exception.filter';
+import { MongoExceptionFilter } from './common/exceptions/mongo-exception.filter';
+import {
+  ValidationException,
+  ValidationExceptionFilter,
+} from './common/exceptions/validation-exception.filter';
 import { ExcludeNullInterceptor } from './utils/excludeNull.interceptor';
 import getLogLevels from './utils/getLogLevels';
 
@@ -17,19 +21,23 @@ async function bootstrap() {
     logger: getLogLevels(process.env.NODE_ENV === 'production'),
   });
 
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     whitelist: true,
-  //     skipMissingProperties: false,
-  //     forbidNonWhitelisted: true,
-  //     transform: true,
-  //     exceptionFactory: (errors: ValidationError[]) =>
-  //       new ValidationException(errors),
-  //   }),
-  // );
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      skipMissingProperties: false,
+      forbidNonWhitelisted: true,
+      transform: true,
+      exceptionFactory: (errors: ValidationError[]) =>
+        new ValidationException(errors),
+    }),
+  );
+  // Todo: Use exception filter
 
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+  // app.useGlobalFilters(new ValidationExceptionFilter());
+  app.useGlobalFilters(new MongoExceptionFilter());
+
   app.setGlobalPrefix('/api');
 
   app.use(morgan('tiny'));
