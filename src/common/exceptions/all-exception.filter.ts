@@ -28,8 +28,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
       message: exception['message'] || null,
-      validations: exception['validationErrors'] || null,
     };
+    if (exception['validationErrors']) {
+      responseBody['validations'] = exception['validationErrors'];
+    }
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
