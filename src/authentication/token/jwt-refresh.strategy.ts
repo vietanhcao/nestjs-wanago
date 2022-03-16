@@ -16,11 +16,12 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
     private readonly userService: UsersService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: Request) => {
-          return request?.cookies?.Refresh;
-        },
-      ]),
+      // jwtFromRequest: ExtractJwt.fromExtractors([
+      //   (request: Request) => {
+      //     return request?.cookies?.Refresh;
+      //   },
+      // ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // verify by token header
       secretOrKey: configService.get('JWT_REFRESH_TOKEN_SECRET'),
       passReqToCallback: true,
     });

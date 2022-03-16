@@ -63,36 +63,15 @@ export class AuthenticationController {
   @Post('log-in')
   async logIn(@Req() request: RequestWithUser, @Res() response: Response) {
     const { user } = request;
-    const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
-    const token = this.authenticationService.getJwtToken(user.id);
-    response.setHeader('Set-Cookie', cookie);
-    //remove password
-    user.password = undefined;
-    // response cookie and token
-    return response.json(Resolve.ok(200, 'Success', { user, token }));
-  }
-
-  /**
-   * @desc  use refresh token to get a new token
-   * @route Post /authentication/log-in-refresh
-   * @access public
-   */
-  @HttpCode(200)
-  @UseGuards(LocalAuthenticationGuard)
-  @Post('log-in-refresh')
-  async logInRefresh(
-    @Req() request: RequestWithUser,
-    @Res() response: Response,
-  ) {
-    const { user } = request;
     const accessTokenCookie =
       this.authenticationService.getCookieWithJwtAccessToken(user.id);
     const refreshTokenCookie =
       this.authenticationService.getCookieWithJwtRefreshToken(user.id);
-    const refreshToken = refreshTokenCookie.token;
 
-    await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
-
+    await this.usersService.setCurrentRefreshToken(
+      refreshTokenCookie.token,
+      user.id,
+    );
     request.res.setHeader('Set-Cookie', [
       accessTokenCookie.cookie,
       refreshTokenCookie.cookie,
@@ -100,34 +79,74 @@ export class AuthenticationController {
     //remove password
     user.password = undefined;
     // response cookie and token
-    return response.json({
-      user,
-      accessToken: accessTokenCookie.token,
-      refreshTokenCookie: refreshTokenCookie.token,
-    });
+    return response.json(
+      Resolve.ok(200, 'Success', {
+        user,
+        accessToken: accessTokenCookie.token,
+        refreshToken: refreshTokenCookie.token,
+      }),
+    );
   }
+
+  // /**
+  //  * @desc  use refresh token to get a new token
+  //  * @route Post /authentication/log-in-refresh
+  //  * @access public
+  //  */
+  // @HttpCode(200)
+  // @UseGuards(LocalAuthenticationGuard)
+  // @Post('log-in-refresh')
+  // async logInRefresh(
+  //   @Req() request: RequestWithUser,
+  //   @Res() response: Response,
+  // ) {
+  //   const { user } = request;
+  //   const accessTokenCookie =
+  //     this.authenticationService.getCookieWithJwtAccessToken(user.id);
+  //   const refreshTokenCookie =
+  //     this.authenticationService.getCookieWithJwtRefreshToken(user.id);
+  //   const refreshToken = refreshTokenCookie.token;
+
+  //   await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
+
+  //   request.res.setHeader('Set-Cookie', [
+  //     accessTokenCookie.cookie,
+  //     refreshTokenCookie.cookie,
+  //   ]);
+  //   //remove password
+  //   user.password = undefined;
+  //   // response cookie and token
+  //   return response.json({
+  //     user,
+  //     accessToken: accessTokenCookie.token,
+  //     refreshTokenCookie: refreshTokenCookie.token,
+  //   });
+  // }
 
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
-  refresh(@Req() request: RequestWithUser) {
+  async refresh(@Req() request: RequestWithUser) {
     const accessTokenCookie =
       this.authenticationService.getCookieWithJwtAccessToken(request.user.id);
-
     request.res.setHeader('Set-Cookie', accessTokenCookie.cookie);
-    return request.user;
+
+    return Resolve.ok(200, 'success', {
+      user: request.user,
+      accessToken: accessTokenCookie.token,
+    });
   }
 
-  @UseGuards(JwtAuthenticationGuard)
-  @Post('log-out-refresh')
-  @HttpCode(200)
-  async logOutRefresh(@Req() request: RequestWithUser) {
-    await this.usersService.removeRefreshToken(request.user.id);
-    request.res.setHeader(
-      'Set-Cookie',
-      this.authenticationService.getCookiesForLogOut(),
-    );
-    return Resolve.ok(200, 'success');
-  }
+  // @UseGuards(JwtAuthenticationGuard)
+  // @Post('log-out-refresh')
+  // @HttpCode(200)
+  // async logOutRefresh(@Req() request: RequestWithUser) {
+  //   await this.usersService.removeRefreshToken(request.user.id);
+  //   request.res.setHeader(
+  //     'Set-Cookie',
+  //     this.authenticationService.getCookiesForLogOut(),
+  //   );
+  //   return Resolve.ok(200, 'success');
+  // }
 
   /**
    * @desc  @JwtAuthenticationGuard will be triggered @jwt.strategy => get user per request
@@ -138,9 +157,10 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   @Post('log-out')
   async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
+    await this.usersService.removeRefreshToken(request.user.id);
     response.setHeader(
       'Set-Cookie',
-      this.authenticationService.getCookieForLogOut(),
+      this.authenticationService.getCookiesForLogOut(),
     );
     return response.json(Resolve.ok(200, 'success'));
   }

@@ -105,24 +105,24 @@ export class AuthenticationService {
       );
     }
   }
-  public getCookieWithJwtToken(userId: number) {
-    const payload: TokenPayload = { userId };
-    // payload store only userId
-    const token = this.jwtService.sign(payload);
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-      'JWT_EXPIRATION_TIME',
-    )}`;
-  }
+  // public getCookieWithJwtToken(userId: number) {
+  //   const payload: TokenPayload = { userId };
+  //   // payload store only userId
+  //   const token = this.jwtService.sign(payload);
+  //   return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+  //     'JWT_EXPIRATION_TIME',
+  //   )}`;
+  // }
 
-  public getJwtToken(userId: number) {
-    const payload: TokenPayload = { userId };
-    // payload store only userId
-    return this.jwtService.sign(payload);
-  }
+  // public getJwtToken(userId: number) {
+  //   const payload: TokenPayload = { userId };
+  //   // payload store only userId
+  //   return this.jwtService.sign(payload);
+  // }
 
-  public getCookieForLogOut() {
-    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
-  }
+  // public getCookieForLogOut() {
+  //   return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  // }
 
   public deleteUserById(id: string) {
     return this.usersService.deleteWithoutTransactions(id);

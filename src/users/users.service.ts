@@ -36,7 +36,6 @@ class UsersService {
 
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
     const user = await this.getById(userId);
-
     const isRefreshTokenMatching = await bcrypt.compare(
       refreshToken,
       user.currentHashedRefreshToken,
@@ -87,7 +86,9 @@ class UsersService {
     // ]);
     const user = await this.userModel
       .findById(id)
-      .select('lastName firstName password avatar role');
+      .select(
+        'lastName firstName password avatar role currentHashedRefreshToken',
+      );
     if (!user) {
       throw new NotFoundException();
     }
