@@ -23,6 +23,9 @@ export class User {
   @Prop({ require: true, unique: true, lowercase: true }) // unique
   email: string;
 
+  @Prop({ default: false })
+  isEmailConfirmed: boolean;
+
   @Prop()
   firstName: string;
 

@@ -29,12 +29,14 @@ import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
 import Role from './enum/role.enum';
 import RoleGuard from './guards/role.guard';
 import Resolve from 'src/common/helpers/Resolve';
+import { EmailConfirmationService } from 'src/email-confirmation/email-confirmation.service';
 
 @Controller('authentication')
 export class AuthenticationController {
   constructor(
     private readonly authenticationService: AuthenticationService,
     private readonly usersService: UsersService, // import another service
+    private readonly emailConfirmationService: EmailConfirmationService, // import another service
   ) {}
 
   //dto validation
@@ -44,6 +46,9 @@ export class AuthenticationController {
   async register(@Body() registrationData: RegisterDto) {
     const response = await this.authenticationService.register(
       registrationData,
+    );
+    await this.emailConfirmationService.sendVerificationLink(
+      registrationData.email,
     );
     return Resolve.ok(200, 'Success');
   }

@@ -22,6 +22,7 @@ import { CommentModule } from './comment/comment.module';
 import { LogsModule } from './logs/logs.module';
 import { BullModule } from '@nestjs/bull';
 import { OptimizeModule } from './optimize/optimize.module';
+import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
 
 @Module({
   imports: [
@@ -50,6 +51,10 @@ import { OptimizeModule } from './optimize/optimize.module';
         JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
         JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
         JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+
+        JWT_VERIFICATION_TOKEN_SECRET: Joi.string().required(),
+        JWT_VERIFICATION_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+        EMAIL_CONFIRMATION_URL: Joi.string().required(),
       }),
     }),
     BullModule.forRootAsync({
@@ -96,6 +101,7 @@ import { OptimizeModule } from './optimize/optimize.module';
     CommentModule,
     LogsModule,
     OptimizeModule,
+    EmailConfirmationModule,
   ],
   controllers: [],
   providers: [

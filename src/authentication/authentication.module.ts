@@ -8,12 +8,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './token/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './token/jwt-refresh.strategy';
+import { EmailConfirmationModule } from 'src/email-confirmation/email-confirmation.module';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     ConfigModule,
+    EmailConfirmationModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

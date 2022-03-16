@@ -66,7 +66,7 @@ class UsersService {
     // });
     const user = await this.userModel
       .findOne({ email })
-      .select('lastName firstName password avatar role');
+      .select('lastName firstName password avatar role isEmailConfirmed');
     if (!user) {
       throw new NotFoundException();
     }
@@ -175,6 +175,15 @@ class UsersService {
     //   },
     // });
     return createdUser.save();
+  }
+  async markEmailAsConfirmed(email: string) {
+    return this.userModel.findOneAndUpdate(
+      { email },
+      {
+        isEmailConfirmed: true,
+      },
+      { new: true },
+    );
   }
   async deleteWithoutTransactions(userId: string) {
     const user = await this.userModel
