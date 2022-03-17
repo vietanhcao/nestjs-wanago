@@ -1,4 +1,6 @@
+import { Type } from 'class-transformer';
 import { IsString, IsNotEmpty } from 'class-validator';
+import { Post } from 'src/posts/post.schema';
 
 export class CommentDto {
   @IsString()
@@ -6,6 +8,7 @@ export class CommentDto {
   content: string;
 
   @IsString()
+  @Type(() => Post)
   @IsNotEmpty()
   postId: string;
 }

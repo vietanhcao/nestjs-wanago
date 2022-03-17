@@ -20,7 +20,8 @@ export default class EmailSchedulingService {
   scheduleEmail(emailSchedule: EmailScheduleDto) {
     const date = new Date(emailSchedule.date);
     const job = new CronJob(date, () => {
-      this.emailService.sendMail({
+      //use bull
+      this.emailService.sendConfirmationEmail({
         recipient: emailSchedule.recipient,
         subject: emailSchedule.subject,
         content: emailSchedule.content,

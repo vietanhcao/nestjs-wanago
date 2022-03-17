@@ -6,15 +6,39 @@ import { User } from '../users/schema/user.schema';
 import CommentDto from './dto/comment.dto';
 import UpdateCommentDto from './dto/updateComment.dto';
 import { Comments, CommentsDocument } from './comment.schema';
+import ClientQuery from 'src/common/client-query';
 
 @Injectable()
 export class CommentService {
+  public commentClientQuery: ClientQuery<CommentsDocument>;
   constructor(
     @InjectModel(Comments.name) private commentsModel: Model<CommentsDocument>,
-  ) {}
+  ) {
+    this.commentClientQuery = new ClientQuery(this.commentsModel);
+  }
 
-  async findAllByPostId(postId: string) {
-    return this.commentsModel.find({ postId }, { owner: 0, postId: 0 });
+  async findAllByPostId(
+    postId: string,
+    documentsToSkip = 0,
+    limitOfDocuments?: number,
+  ) {
+    const response = await this.commentClientQuery.findForQuery(
+      {
+        filter: { postId },
+        limit: limitOfDocuments,
+        offset: documentsToSkip,
+        sort: { _id: 1 },
+      },
+      {
+        queryMongoose: { postId },
+        // populate: {
+        //   path: 'roles department',
+        //   select: 'name description',
+        // },
+        omit: ['owner', 'postId', 'createdAt', 'updatedAt'],
+      },
+    );
+    return response;
   }
 
   // async findOne(id: string) {

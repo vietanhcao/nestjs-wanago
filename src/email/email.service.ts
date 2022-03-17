@@ -23,7 +23,7 @@ export class EmailService {
     }
   }
 
-  public sendMail(data: EmailDto) {
+  public async sendMail(data: EmailDto) {
     return this.mailerService
       .sendMail({
         to: data.recipient,
