@@ -1,28 +1,25 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TerminusModule } from '@nestjs/terminus';
-import PostsModule from './posts/posts.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import * as Joi from '@hapi/joi';
+import { BullModule } from '@nestjs/bull';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import CategoriesModule from './categories/categories.module';
-import SeriesModule from './series/series.module';
-import LogsMiddleware from './utils/logs.middleware';
-import HealthModule from './health/health.module';
-import { APP_FILTER } from '@nestjs/core';
-import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
-import { EmailModule } from './email/email.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import FilesModule from './files/files.module';
-import { EmailSchedulingModule } from './emailScheduling/emailSchedule.module';
 import { ChatModule } from './chat/chat.module';
 import { CommentModule } from './comment/comment.module';
-import { LogsModule } from './logs/logs.module';
-import { BullModule } from '@nestjs/bull';
-import { OptimizeModule } from './optimize/optimize.module';
 import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
+import { EmailSchedulingModule } from './emailScheduling/emailSchedule.module';
+import FilesModule from './files/files.module';
+import HealthModule from './health/health.module';
+import { LogsModule } from './logs/logs.module';
+import { OptimizeModule } from './optimize/optimize.module';
+import PostsModule from './posts/posts.module';
+import SeriesModule from './series/series.module';
+import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
+import LogsMiddleware from './utils/logs.middleware';
 
 @Module({
   imports: [

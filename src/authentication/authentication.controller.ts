@@ -1,35 +1,30 @@
 import {
   Body,
-  Req,
   Controller,
-  HttpCode,
-  Post,
-  UseGuards,
-  Res,
-  Get,
-  ValidationPipe,
-  UsePipes,
-  UseInterceptors,
-  Param,
   Delete,
-  HttpException,
-  HttpStatus,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { AuthenticationService } from './authentication.service';
-import RegisterDto from './dto/register.dto';
-import RequestWithUser from './requestWithUser.interface';
-import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import { Response } from 'express';
-import JwtAuthenticationGuard from './token/jwt-authentication.guard';
-import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
-import { User } from 'src/users/schema/user.schema';
-import ParamsWithId from 'src/utils/paramsWithId';
-import UsersService from '../users/users.service';
-import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
-import Role from './enum/role.enum';
-import RoleGuard from './guards/role.guard';
 import Resolve from 'src/common/helpers/Resolve';
 import { EmailConfirmationService } from 'src/email-confirmation/email-confirmation.service';
+import ParamsWithId from 'src/utils/paramsWithId';
+import UsersService from '../users/users.service';
+import { AuthenticationService } from './authentication.service';
+import RegisterDto from './dto/register.dto';
+import Role from './enum/role.enum';
+import RoleGuard from './guards/role.guard';
+import { LocalAuthenticationGuard } from './localAuthentication.guard';
+import RequestWithUser from './requestWithUser.interface';
+import JwtAuthenticationGuard from './token/jwt-authentication.guard';
+import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
 
 @Controller('authentication')
 export class AuthenticationController {
