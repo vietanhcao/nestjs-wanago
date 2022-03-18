@@ -3,6 +3,7 @@ import { User } from '../../users/schema/user.schema';
 import { Exclude, Type } from 'class-transformer';
 import { Category } from '../../categories/category.schema';
 import { Series } from '../../series/series.schema';
+import { Files } from 'src/files/files.schema';
 
 export class UpdatePostDto {
   @IsOptional()
@@ -18,6 +19,10 @@ export class UpdatePostDto {
   @IsString()
   @IsNotEmpty()
   content?: string;
+
+  @Type(() => Files)
+  @IsOptional()
+  file?: Files;
 
   @Type(() => Category)
   @IsOptional()

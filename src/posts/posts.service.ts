@@ -186,13 +186,13 @@ class PostsService {
     throw new PostNotFoundException(id);
   }
 
-  async update(id: string, postData: UpdatePostDto) {
+  async update(id: string, postData: UpdatePostDto, author: User) {
     // put do this
     // .findByIdAndUpdate(id, postData)
     // .setOptions({ overwrite: true, new: true })
     const post = await this.postModel
       //update partial
-      .findByIdAndUpdate({ _id: id }, postData, { new: true })
+      .updateOne({ _id: id, author }, postData, { new: true })
       .populate('author')
       .populate('categories')
       .populate('series');
@@ -206,8 +206,11 @@ class PostsService {
     await this.clearCache();
     return post;
   }
-  async delete(postId: string) {
-    const result = await this.postModel.findByIdAndDelete(postId);
+  async delete(postId: string, author: User) {
+    const result = await this.postModel.findOneAndDelete({
+      _id: postId,
+      author,
+    });
     if (!result) {
       throw new NotFoundException();
     }

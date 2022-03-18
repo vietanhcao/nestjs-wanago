@@ -113,15 +113,19 @@ export default class PostsController {
 
   @Delete(':id')
   @UseGuards(PermissionGuard(PostsPermission.DeletePost))
-  async deletePost(@Param() { id }: ParamsWithId) {
-    await this.postsService.delete(id);
+  async deletePost(@Param() { id }: ParamsWithId, @Req() req: RequestWithUser) {
+    await this.postsService.delete(id, req.user);
     return Resolve.ok(0, 'Success');
   }
 
   @Put(':id') // meaning update all filed
   @UseGuards(JwtAuthenticationGuard)
-  async updatePost(@Param() { id }: ParamsWithId, @Body() post: UpdatePostDto) {
-    await this.postsService.update(id, post);
+  async updatePost(
+    @Param() { id }: ParamsWithId,
+    @Body() post: UpdatePostDto,
+    @Req() req: RequestWithUser,
+  ) {
+    await this.postsService.update(id, post, req.user);
     return Resolve.ok(0, 'Success');
   }
 
@@ -130,8 +134,9 @@ export default class PostsController {
   async updatePostByPatch(
     @Param() { id }: ParamsWithId,
     @Body() post: UpdatePostDto,
+    @Req() req: RequestWithUser,
   ) {
-    await this.postsService.update(id, post);
+    await this.postsService.update(id, post, req.user);
     return Resolve.ok(0, 'Success');
   }
 }
