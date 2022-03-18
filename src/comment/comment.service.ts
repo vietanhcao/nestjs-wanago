@@ -1,12 +1,10 @@
-import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { NotFoundException } from '@nestjs/common';
-import { User } from '../users/schema/user.schema';
-import CommentDto from './dto/comment.dto';
-import UpdateCommentDto from './dto/updateComment.dto';
-import { Comments, CommentsDocument } from './comment.schema';
+import { Model } from 'mongoose';
 import ClientQuery from 'src/common/client-query';
+import { User } from '../users/schema/user.schema';
+import { Comments, CommentsDocument } from './comment.schema';
+import CommentDto from './dto/comment.dto';
 
 @Injectable()
 export class CommentService {

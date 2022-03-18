@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
-import { parse } from 'cookie';
 import { WsException } from '@nestjs/websockets';
 import { Message, MessageDocument } from './message.schema';
 import { Model } from 'mongoose';

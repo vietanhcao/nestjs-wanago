@@ -2,7 +2,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
-import * as Mail from 'nodemailer/lib/mailer';
 import EmailDto from './email.dto';
 
 @Injectable()

@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import Role from 'src/authentication/enum/role.enum';
 import RoleGuard from 'src/authentication/guards/role.guard';
+import Resolve from 'src/common/helpers/Resolve';
 import EmailDto from './email.dto';
 import { EmailService } from './email.service';
-import Resolve from 'src/common/helpers/Resolve';
-import RequestWithUser from '../authentication/requestWithUser.interface.d';
 
 @Controller('email')
 export class MailController {
@@ -12,10 +11,7 @@ export class MailController {
 
   @Post('send-queue')
   @UseGuards(RoleGuard(Role.User))
-  async sendConfirmationEmail(
-    @Body() email: EmailDto,
-    @Req() req: RequestWithUser,
-  ) {
+  async sendConfirmationEmail(@Body() email: EmailDto) {
     // TODO: pass the email data
     this.emailService.sendConfirmationEmail(email);
     return Resolve.ok(0, 'Success');

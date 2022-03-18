@@ -1,27 +1,20 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
-  Put,
   Query,
   Req,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
-import PermissionGuard from 'src/authentication/guards/permission.guard';
 import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
-import PostsPermission from 'src/posts/enum/postsPermission.enum';
-import RequestWithUser from '../authentication/requestWithUser.interface';
-import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
-import ParamsWithId from '../utils/paramsWithId';
-import { Comments } from './comment.schema';
-import { CommentService } from './comment.service';
-import CommentDto from './dto/comment.dto';
 import Resolve from 'src/common/helpers/Resolve';
 import { PaginationParams } from 'src/utils/paginationParams';
+import RequestWithUser from '../authentication/requestWithUser.interface';
+import ParamsWithId from '../utils/paramsWithId';
+import { CommentService } from './comment.service';
+import CommentDto from './dto/comment.dto';
 
 @Controller('comment')
 // @UseInterceptors(MongooseClassSerializerInterceptor(Comments))
@@ -54,7 +47,7 @@ export class CommentController {
     @Body() comment: CommentDto,
     @Req() req: RequestWithUser,
   ) {
-    const response = await this.commentService.create(comment, req.user);
+    await this.commentService.create(comment, req.user);
     return Resolve.ok(200, 'Success');
   }
 

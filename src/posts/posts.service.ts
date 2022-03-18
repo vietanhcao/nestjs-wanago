@@ -10,7 +10,6 @@ import { Cache } from 'cache-manager';
 import * as mongoose from 'mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import ClientQuery from 'src/common/client-query';
-import Resolve from 'src/common/helpers/Resolve';
 import { User } from '../users/schema/user.schema';
 import { GET_POSTS_CACHE_KEY } from './cache/postsCacheKey.constant';
 import { PostDto } from './dto/post.dto';
@@ -177,7 +176,7 @@ class PostsService {
     await this.postModel.findByIdAndUpdate({ _id: id }, post, {
       new: true,
     });
-    const updatedPost = await this.findOne(id);
+    await this.findOne(id);
     // if (updatedPost) {
     //   await this.postsSearchService.update(updatedPost);
     //   return updatedPost;

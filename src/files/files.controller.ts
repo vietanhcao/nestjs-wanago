@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
@@ -11,15 +10,15 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
-import RequestWithUser from '../authentication/requestWithUser.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express, Response } from 'express';
+import { Response } from 'express';
+import { dataSelectCity } from 'src/common/dataDefault';
+import Resolve from 'src/common/helpers/Resolve';
+import RequestWithUser from '../authentication/requestWithUser.interface';
+import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
 import ParamsWithId from '../utils/paramsWithId';
 import FilesService from './files.service';
 import { imageFileFilter } from './helpers/file_upload.utils';
-import { dataSelectCity } from 'src/common/dataDefault';
-import Resolve from 'src/common/helpers/Resolve';
 
 @Controller('resource')
 export class FilesController {

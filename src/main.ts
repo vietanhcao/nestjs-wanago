@@ -7,12 +7,7 @@ import * as morgan from 'morgan';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './chat/adapters/redisIoAdapter';
 import { AllExceptionsFilter } from './common/exceptions/all-exception.filter';
-import { MongoExceptionFilter } from './common/exceptions/mongo-exception.filter';
-import {
-  ValidationException,
-  ValidationExceptionFilter,
-} from './common/exceptions/validation-exception.filter';
-import { ExcludeNullInterceptor } from './utils/excludeNull.interceptor';
+import { ValidationException } from './common/exceptions/validation-exception.filter';
 import getLogLevels from './utils/getLogLevels';
 
 async function bootstrap() {

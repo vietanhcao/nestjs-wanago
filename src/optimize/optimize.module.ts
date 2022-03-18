@@ -1,10 +1,9 @@
-import { Module } from '@nestjs/common';
-import { OptimizeController } from './optimize.controller';
 import { BullModule } from '@nestjs/bull';
+import { Module } from '@nestjs/common';
 import { join } from 'path';
-import { ImageProcessor } from './optimize.processor';
-import { AudioProcessor } from './audio.processor';
 import { AudioController } from './audio.controller';
+import { AudioProcessor } from './audio.processor';
+import { OptimizeController } from './optimize.controller';
 // import imageProcessor from './image.processor';
 
 @Module({

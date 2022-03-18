@@ -1,13 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { CronJob } from 'cron';
 import { EmailService } from '../email/email.service';
 import EmailScheduleDto from './dto/emailSchedule.dto';
-import {
-  Cron,
-  CronExpression,
-  Interval,
-  SchedulerRegistry,
-} from '@nestjs/schedule';
-import { CronJob } from 'cron';
 
 @Injectable()
 export default class EmailSchedulingService {
@@ -82,7 +77,7 @@ export default class EmailSchedulingService {
       } catch (e) {
         next = 'error: next fire date is in the past!';
       }
-      this.logger.log(`job: ${key} -> next: ${next}`);
+      this.logger.log(`job: ${key} -> next: ${next}`, map);
     });
   }
 }

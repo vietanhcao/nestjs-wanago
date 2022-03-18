@@ -1,4 +1,4 @@
-import { IsString, NotEquals, IsEnum } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
 import LeverLog from '../leverLog.enum';
 
 export class CreateLogDto {

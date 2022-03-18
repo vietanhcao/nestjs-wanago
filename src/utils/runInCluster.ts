@@ -11,7 +11,7 @@ export function runInCluster(bootstrap: () => Promise<void>) {
       cluster.fork();
     }
     cluster.on('exit', (worker, code, signal) => {
-      console.log(`worker ${worker.process.pid} died`);
+      console.log(`worker ${worker.process.pid} died`, code, signal);
     });
   } else {
     bootstrap().then(() =>

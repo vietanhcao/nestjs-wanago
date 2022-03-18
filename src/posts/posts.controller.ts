@@ -1,8 +1,5 @@
 import {
   Body,
-  CacheInterceptor,
-  CacheKey,
-  CacheTTL,
   Controller,
   Delete,
   Get,
@@ -12,30 +9,24 @@ import {
   Put,
   Query,
   Req,
-  SetMetadata,
   UseFilters,
   UseGuards,
-  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import PostsService from './posts.service';
-import ParamsWithId from '../utils/paramsWithId';
-import PostDto from './dto/post.dto';
-import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
-import RequestWithUser from 'src/authentication/requestWithUser.interface';
-import { PaginationParams } from 'src/utils/paginationParams';
-import { Post as PostModel } from './post.schema';
-import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
-import UpdatePostDto from './dto/updatePost.dto';
-import { ExceptionsLoggerFilter } from 'src/utils/exceptionsLogger.filter';
-import { GET_POSTS_CACHE_KEY } from './cache/postsCacheKey.constant';
-import { HttpCacheInterceptor } from './cache/httpCache.interceptor';
-import RoleGuard from 'src/authentication/guards/role.guard';
 import Role from 'src/authentication/enum/role.enum';
 import PermissionGuard from 'src/authentication/guards/permission.guard';
-import PostsPermission from './enum/postsPermission.enum';
+import RoleGuard from 'src/authentication/guards/role.guard';
+import RequestWithUser from 'src/authentication/requestWithUser.interface';
+import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
 import Resolve from 'src/common/helpers/Resolve';
+import { ExceptionsLoggerFilter } from 'src/utils/exceptionsLogger.filter';
+import { PaginationParams } from 'src/utils/paginationParams';
+import ParamsWithId from '../utils/paramsWithId';
+import PostDto from './dto/post.dto';
+import UpdatePostDto from './dto/updatePost.dto';
+import PostsPermission from './enum/postsPermission.enum';
+import PostsService from './posts.service';
 
 @Controller('posts')
 // @UseInterceptors(MongooseClassSerializerInterceptor(PostModel)) //enable to execute class-transformer
@@ -62,6 +53,7 @@ export default class PostsController {
       // hide elastic search
       // return this.postsService.searchForPosts(search, skip, limit);
     }
+    console.log(query);
     const { result, pagination } = await this.postsService.findAll(
       skip,
       limit,

@@ -2,12 +2,11 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
-  OnGatewayInit,
   OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
@@ -27,7 +26,7 @@ export default class ChatGateway
   constructor(private readonly chatService: ChatService) {}
 
   async handleConnection(socket: Socket, ...args: any[]) {
-    console.log(`Client connected: ${socket.id}`);
+    console.log(`Client connected: ${socket.id}`, args);
     await this.chatService.getUserFromSocket(socket);
   }
 
@@ -54,7 +53,7 @@ export default class ChatGateway
   }
 
   afterInit(server: Server) {
-    console.log('Init');
+    console.log('Init', server);
   }
 
   @SubscribeMessage('send_message')
@@ -71,7 +70,7 @@ export default class ChatGateway
 
   @SubscribeMessage('request_all_messages')
   async requestAllMessages(@ConnectedSocket() socket: Socket) {
-    const author = await this.chatService.getUserFromSocket(socket);
+    await this.chatService.getUserFromSocket(socket);
     const messages = await this.chatService.getAllMessages();
 
     socket.emit('send_all_messages', messages);
