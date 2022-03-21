@@ -25,6 +25,7 @@ import LogsMiddleware from './utils/logs.middleware';
   imports: [
     // The  ConfigModule built into NestJS supports @hapi/joi that we can use to define a validation schema.
     ConfigModule.forRoot({
+      envFilePath: '../.env',
       validationSchema: Joi.object({
         MONGO_USERNAME: Joi.string().required(),
         MONGO_PASSWORD: Joi.string().required(),

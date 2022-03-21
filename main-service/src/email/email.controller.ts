@@ -4,7 +4,7 @@ import RoleGuard from 'src/authentication/guards/role.guard';
 import EmailDto from './email.dto';
 import { EmailService } from './email.service';
 import Resolve from 'src/common/helpers/Resolve';
-import RequestWithUser from '../authentication/requestWithUser.interface.d';
+import RequestWithUser from '../authentication/requestWithUser.interface';
 
 @Controller('email')
 export class MailController {
