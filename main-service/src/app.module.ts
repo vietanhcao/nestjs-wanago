@@ -3,8 +3,10 @@ import { BullModule } from '@nestjs/bull';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import CategoriesModule from './categories/categories.module';
@@ -101,7 +103,7 @@ import LogsMiddleware from './utils/logs.middleware';
     OptimizeModule,
     EmailConfirmationModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     AppService,
     {

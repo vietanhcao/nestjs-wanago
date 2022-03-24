@@ -8,6 +8,7 @@ import { AppModule } from './app.module';
 import { RedisIoAdapter } from './chat/adapters/redisIoAdapter';
 import { AllExceptionsFilter } from './common/exceptions/all-exception.filter';
 import { MongoExceptionFilter } from './common/exceptions/mongo-exception.filter';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import {
   ValidationException,
   ValidationExceptionFilter,
@@ -36,7 +37,7 @@ async function bootstrap() {
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   // app.useGlobalFilters(new ValidationExceptionFilter());
-  // app.useGlobalFilters(new MongoExceptionFilter());
+  app.useGlobalFilters(new MongoExceptionFilter());
 
   app.setGlobalPrefix('/api');
 
@@ -54,15 +55,29 @@ async function bootstrap() {
   // await app.listen(3000);
   app.useWebSocketAdapter(new RedisIoAdapter(app, configService));
 
-  await app.listen(process.env.PORT, '0.0.0.0');
-  // console.log(`SERVER (${process.pid}) IS RUNNING ON `, process.env.PORT);
+  app.connectMicroservice<MicroserviceOptions>(
+    {
+      transport: Transport.NATS,
+      options: {
+        servers: 'nats://localhost:4222',
+        queue: 'MAIN_QUEUE',
+      },
+    },
+    { inheritAppConfig: true },
+  );
+
+  await app.startAllMicroservices();
+
+  await app.listen(3600, '0.0.0.0');
+  // console.log(`SERVER (${process.pid}) IS RUNNING ON `, 3600);
 }
 
-if (isNaN(parseInt(process.env.PORT))) {
+if (isNaN(parseInt('3600'))) {
   console.error('No port provided. 👏');
   process.exit(666);
 }
-bootstrap().then(() => console.log('Service listening 👍: ', process.env.PORT));
+
+bootstrap().then(() => console.log('Service listening 👍: ', 3600));
 
 // run cluster
 // runInCluster(bootstrap);
