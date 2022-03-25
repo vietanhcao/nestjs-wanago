@@ -14,7 +14,7 @@ export class Category {
   @Prop()
   name: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name }) // like many to one relationship
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' }) // like many to one relationship
   @Type(() => User)
   author: User;
 }

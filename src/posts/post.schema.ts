@@ -27,19 +27,19 @@ export class Post {
   })
   content: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name }) // like many to one relationship User have many posts
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' }) // like many to one relationship User have many posts
   @Type(() => User)
   author: User;
 
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: Category.name }], // like many to many relationship Category have many posts
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }], // like many to many relationship Category have many posts
   })
   @Type(() => Category)
   categories: Category[];
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: PrivateFile.name,
+    ref: 'PrivateFile',
   })
   @Type(() => PrivateFile)
   file?: PrivateFile;

@@ -53,7 +53,7 @@ export default class ChatGateway
   }
 
   afterInit(server: Server) {
-    console.log('Init', server);
+    console.log('Init', 'server', server);
   }
 
   @SubscribeMessage('send_message')
