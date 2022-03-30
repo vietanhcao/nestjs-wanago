@@ -14,6 +14,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     //We don’t use the ConfigService above to read the environment variables because it isn’t initialized yet.
     logger: getLogLevels(process.env.NODE_ENV === 'production'),
+    cors: { origin: '*' },
   });
 
   app.useGlobalPipes(

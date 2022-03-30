@@ -6,7 +6,7 @@ import { User } from 'src/users/schema/user.schema';
 
 export type MessageDocument = Message & Document;
 
-@Schema()
+@Schema({ timestamps: true, autoIndex: true })
 export class Message {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;

@@ -71,7 +71,6 @@ class ClientQuery<T> {
       .sort(sort)
       .populate(populate)
       .lean();
-
     return {
       result: omit.length ? this.omit(results as T[], omit) : results,
       pagination: pagination,

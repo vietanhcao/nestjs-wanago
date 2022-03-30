@@ -11,6 +11,11 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 
+interface msgToServerPayload {
+  message: string;
+  room: string;
+}
+
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -28,16 +33,22 @@ export default class ChatGateway
   async handleConnection(socket: Socket, ...args: any[]) {
     console.log(`Client connected: ${socket.id}`, args);
     await this.chatService.getUserFromSocket(socket);
+    // const allChats = await this.chatService.getAllMessages();
+    // process.nextTick(() => {
+    // socket.emit('allChats', allChats);
+    // });
   }
 
   async handleDisconnect(socket: Socket) {
+    // const query = socket.handshake.query;
+    console.log('Disconnect', socket.handshake.query);
     // await this.chatService.removeUserFromSocket(socket);
     console.log(`Client disconnected: ${socket.id}`);
   }
 
   @SubscribeMessage('msgToServer')
-  public handleMessage(socket: Socket, payload: any) {
-    return socket.to(payload.room).emit('msgToClient', payload);
+  public handleMessage(socket: Socket, payload: msgToServerPayload) {
+    return socket.to(payload.room).emit('msgToClient', payload.message);
   }
 
   @SubscribeMessage('joinRoom')
@@ -63,10 +74,19 @@ export default class ChatGateway
   ) {
     const author = await this.chatService.getUserFromSocket(socket);
     const message = await this.chatService.saveMessage(content, author);
-    socket.emit('receive_message', message);
+    // socket.emit('receive_message', message);
+    // socket.broadcast.emit('receive_message', message);
+    this.server.local.emit('receive_message', message);
 
     return message;
   }
+
+  // @Bind(MessageBody(), ConnectedSocket())
+  // @SubscribeMessage('chat')
+  // handleNewMessage(chat, sender: any) {
+  //   const author = await this.chatService.getUserFromSocket(socket);
+  //   const message = await this.chatService.saveMessage(content, author);
+  // }
 
   @SubscribeMessage('request_all_messages')
   async requestAllMessages(@ConnectedSocket() socket: Socket) {
