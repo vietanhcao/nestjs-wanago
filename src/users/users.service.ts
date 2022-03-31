@@ -65,7 +65,7 @@ class UsersService {
     // });
     const user = await this.userModel
       .findOne({ email })
-      .select('lastName firstName password avatar role isEmailConfirmed');
+      .select('lastName firstName password avatar role isEmailConfirmed email');
     if (!user) {
       throw new NotFoundException();
     }

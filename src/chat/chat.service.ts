@@ -23,7 +23,7 @@ export class ChatService {
       content,
       author: author._id,
     });
-    await newMessage.populate('author', 'lastName firstName -_id'); // exclude password;
+    await newMessage.populate('author', 'email lastName firstName -_id'); // exclude password;
     return newMessage.save();
   }
 
@@ -52,7 +52,7 @@ export class ChatService {
       },
       {
         populate: [
-          { path: 'author', select: 'lastName firstName -_id' }, // exclude password
+          { path: 'author', select: 'email lastName firstName -_id' }, // exclude password
           // { path: 'categories' }, //"populate" returning the data of the author along with the post.
           // { path: 'series' },
           // { path: 'file' },

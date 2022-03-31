@@ -92,7 +92,7 @@ class PostsService {
       },
       {
         populate: [
-          { path: 'author', select: 'lastName firstName -_id' }, // exclude password
+          { path: 'author', select: 'email lastName firstName -_id' }, // exclude password
           // { path: 'categories' }, //"populate" returning the data of the author along with the post.
           // { path: 'series' },
           { path: 'file' },
@@ -111,7 +111,7 @@ class PostsService {
       .findById(id)
       .select('_id file content')
       .populate([
-        { path: 'author', select: 'lastName firstName -_id' }, // exclude password
+        { path: 'author', select: 'email lastName firstName -_id' }, // exclude password
         { path: 'file' },
       ]);
     if (!post) {
