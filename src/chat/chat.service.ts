@@ -53,13 +53,11 @@ export class ChatService {
       {
         populate: [
           { path: 'author', select: 'email lastName firstName -_id' }, // exclude password
-          // { path: 'categories' }, //"populate" returning the data of the author along with the post.
-          // { path: 'series' },
-          // { path: 'file' },
         ],
         queryMongoose,
-        omit: ['categories', 'title', '__v', 'createdAt', 'updatedAt'],
+        omit: ['categories', 'title', '__v', 'createdAt'],
       },
+      true,
     );
     // const results = await response;
     // const count = await this.postModel.find(filters).countDocuments();

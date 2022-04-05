@@ -53,7 +53,11 @@ class ClientQuery<T> {
    * @param query
    * @param options
    */
-  async findForQuery(query: QueryParse, options?: ClientQueryOptions<T>) {
+  async findForQuery(
+    query: QueryParse,
+    options?: ClientQueryOptions<T>,
+    isGetAllPagination = false,
+  ) {
     const { populate, queryMongoose } = options || {};
     const { filter, limit, offset, sort } = this.parseQuery(query || {});
 
@@ -62,7 +66,11 @@ class ClientQuery<T> {
     const mongoFilter = queryMongoose
       ? { ...filter, ...queryMongoose }
       : filter;
-    const pagination = await this.getPagination(mongoFilter, limit);
+    // isGetAllPagination
+    const pagination = await this.getPagination(
+      isGetAllPagination ? {} : mongoFilter,
+      limit,
+    );
     // Todo: Tạo câu query database theo query client
     const results = await this.model
       .find(mongoFilter)

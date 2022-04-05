@@ -98,7 +98,7 @@ class PostsService {
           { path: 'file' },
         ],
         queryMongoose: filters,
-        omit: ['categories', 'title', '__v', 'createdAt', 'updatedAt'],
+        omit: ['categories', 'title', '__v', 'createdAt'],
       },
     );
     // const results = await response;
