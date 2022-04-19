@@ -14,6 +14,14 @@ export class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
+  city: string;
+
+  @IsString()
+  @IsNotEmpty()
+  street: string;
+
+  @IsString()
+  @IsNotEmpty()
   @MinLength(7)
   password: string;
 }
