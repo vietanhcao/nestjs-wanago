@@ -60,7 +60,6 @@ class ClientQuery<T> {
   ) {
     const { populate, queryMongoose } = options || {};
     const { filter, limit, offset, sort } = this.parseQuery(query || {});
-
     // Todo: Lọc dữ liệu theo query và lấy phân trang
     const omit = options?.omit || [];
     const mongoFilter = queryMongoose
@@ -97,7 +96,7 @@ class ClientQuery<T> {
     const config = CONST.QUERY_CONFIG;
     const filter = {};
     const sort = {};
-
+    debugger;
     // Todo: Chuyển query sang dạng query của mongoose
     keys.forEach((key) => {
       const value = query[key];

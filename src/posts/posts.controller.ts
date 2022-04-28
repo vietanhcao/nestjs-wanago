@@ -42,9 +42,9 @@ export default class PostsController {
   // @CacheKey(GET_POSTS_CACHE_KEY)
   // @CacheTTL(120)
   @Get()
-  @UsePipes(new ValidationPipe({ transform: true })) // transform: true to active @Type(() => Number)
+  @UsePipes(new ValidationPipe({ whitelist: false })) // transform: true to active @Type(() => Number)
   async getAllPosts(
-    @Query() { skip, limit, startId }: PaginationParams,
+    @Query() { startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
     @Query('search') search: string,
     @Query() query,
@@ -55,10 +55,10 @@ export default class PostsController {
     }
     console.log(query);
     const { result, pagination } = await this.postsService.findAll(
-      skip,
-      limit,
       startId,
       searchQuery,
+      null,
+      query,
     );
     return Resolve.ok(0, 'Success', result, { pagination });
   }
@@ -68,23 +68,23 @@ export default class PostsController {
    */
   @Get('me')
   @UseGuards(RoleGuard(Role.User))
-  @UsePipes(new ValidationPipe({ transform: true })) // transform: true to active @Type(() => Number)
+  @UsePipes(new ValidationPipe({ whitelist: false })) // transform: true to active @Type(() => Number)
   async getAllPostsByUser(
-    @Query() { skip, limit, startId }: PaginationParams,
+    @Query() { startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
     @Query('search') search: string,
     @Req() req: RequestWithUser,
+    @Query() query,
   ) {
     if (search) {
       // hide elastic search
       // return this.postsService.searchForPosts(search, skip, limit);
     }
     const { result, pagination } = await this.postsService.findAll(
-      skip,
-      limit,
       startId,
       searchQuery,
       req.user,
+      query,
     );
     return Resolve.ok(0, 'Success', result, { pagination });
   }

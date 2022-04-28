@@ -45,13 +45,7 @@ class PostsService {
    * @param limit
    * @param startId
    */
-  async findAll(
-    documentsToSkip = 0,
-    limitOfDocuments?: number,
-    startId?: string,
-    searchQuery?: string,
-    user?: User,
-  ) {
+  async findAll(startId?: string, searchQuery?: string, user?: User, query?) {
     const filters: FilterQuery<PostDocument> = startId
       ? {
           _id: {
@@ -84,12 +78,7 @@ class PostsService {
     //   findQuery.limit(limitOfDocuments);
     // }
     const { result, pagination } = await this.postClientQuery.findForQuery(
-      {
-        filter: filters,
-        limit: limitOfDocuments,
-        offset: documentsToSkip,
-        sort: { _id: 1 },
-      },
+      query,
       {
         populate: [
           { path: 'author', select: 'email lastName firstName -_id' }, // exclude password
