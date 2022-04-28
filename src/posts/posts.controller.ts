@@ -15,7 +15,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import Role from 'src/authentication/enum/role.enum';
-import PermissionGuard from 'src/authentication/guards/permission.guard';
+// import PermissionGuard from 'src/authentication/guards/permission.guard';
 import RoleGuard from 'src/authentication/guards/role.guard';
 import RequestWithUser from 'src/authentication/requestWithUser.interface';
 import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
@@ -25,7 +25,7 @@ import { PaginationParams } from 'src/utils/paginationParams';
 import ParamsWithId from '../utils/paramsWithId';
 import PostDto from './dto/post.dto';
 import UpdatePostDto from './dto/updatePost.dto';
-import PostsPermission from './enum/postsPermission.enum';
+// import PostsPermission from './enum/postsPermission.enum';
 import PostsService from './posts.service';
 
 @Controller('posts')
@@ -104,7 +104,8 @@ export default class PostsController {
   }
 
   @Delete(':id')
-  @UseGuards(PermissionGuard(PostsPermission.DeletePost))
+  // @UseGuards(PermissionGuard(PostsPermission.DeletePost))
+  @UseGuards(JwtAuthenticationGuard)
   async deletePost(@Param() { id }: ParamsWithId, @Req() req: RequestWithUser) {
     await this.postsService.delete(id, req.user);
     return Resolve.ok(0, 'Success');
