@@ -96,7 +96,6 @@ class ClientQuery<T> {
     const config = CONST.QUERY_CONFIG;
     const filter = {};
     const sort = {};
-    debugger;
     // Todo: Chuyển query sang dạng query của mongoose
     keys.forEach((key) => {
       const value = query[key];

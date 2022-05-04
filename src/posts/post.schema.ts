@@ -5,8 +5,9 @@ import { User } from '../users/schema/user.schema';
 import { Transform, Type } from 'class-transformer';
 import { Category } from '../categories/category.schema';
 import { Series } from 'src/series/series.schema';
-import { PrivateFile } from 'src/files/privateFiles.schema';
+// import { PrivateFile } from 'src/files/privateFiles.schema';
 import { Comments } from 'src/comment/comment.schema';
+import { Files } from 'src/files/files.schema';
 // import { Series } from '../series/series.schema';
 
 export type PostDocument = Post & Document;
@@ -39,10 +40,10 @@ export class Post {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'PrivateFile',
+    ref: 'Files',
   })
-  @Type(() => PrivateFile)
-  file?: PrivateFile;
+  @Type(() => Files)
+  file?: Files;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
