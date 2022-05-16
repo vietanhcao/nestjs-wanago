@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
 import Resolve from 'src/common/helpers/Resolve';
-import { PaginationParams } from 'src/utils/paginationParams';
+// import { PaginationParams } from 'src/utils/paginationParams';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import ParamsWithId from '../utils/paramsWithId';
 import { CommentService } from './comment.service';
@@ -24,15 +24,20 @@ export class CommentController {
   @Get('/:id')
   @UseGuards(JwtAuthenticationGuard)
   async getAllComments(
-    @Query() { skip, limit }: PaginationParams,
+    // @Query() { skip, limit }: PaginationParams,
     @Param() { id }: ParamsWithId,
+    @Query() query,
   ) {
+    // const { result, pagination } = await this.commentService.findAllByPostId(
+    //   id,
+    //   skip,
+    //   limit,
+    // );
+
     const { result, pagination } = await this.commentService.findAllByPostId(
       id,
-      skip,
-      limit,
+      query,
     );
-
     return Resolve.ok(0, 'Success', result, { pagination });
   }
 

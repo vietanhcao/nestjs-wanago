@@ -15,28 +15,17 @@ export class CommentService {
     this.commentClientQuery = new ClientQuery(this.commentsModel);
   }
 
-  async findAllByPostId(
-    postId: string,
-    documentsToSkip = 0,
-    limitOfDocuments?: number,
-  ) {
-    const response = await this.commentClientQuery.findForQuery(
-      {
-        filter: { postId },
-        limit: limitOfDocuments,
-        offset: documentsToSkip,
-        sort: { _id: 1 },
-      },
+  async findAllByPostId(postId: string, query?) {
+    const { result, pagination } = await this.commentClientQuery.findForQuery(
+      query,
       {
         queryMongoose: { postId },
-        // populate: {
-        //   path: 'roles department',
-        //   select: 'name description',
-        // },
         omit: ['owner', 'postId', 'createdAt', 'updatedAt'],
       },
     );
-    return response;
+    // const results = await response;
+    // const count = await this.postModel.find(filters).countDocuments();
+    return { result, pagination };
   }
 
   // async findOne(id: string) {
