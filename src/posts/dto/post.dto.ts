@@ -1,5 +1,4 @@
-import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 import { Files } from 'src/files/files.schema';
 
 export class PostDto {
@@ -11,7 +10,8 @@ export class PostDto {
   @IsNotEmpty()
   content: string;
 
-  @Type(() => Files)
+  // @Type(() => Files)
+  @IsMongoId()
   file: Files;
 }
 
