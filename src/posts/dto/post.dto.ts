@@ -1,4 +1,6 @@
+import { Type } from 'class-transformer';
 import { IsString, IsNotEmpty } from 'class-validator';
+import { Files } from 'src/files/files.schema';
 
 export class PostDto {
   @IsString()
@@ -9,8 +11,8 @@ export class PostDto {
   @IsNotEmpty()
   content: string;
 
-  @IsString()
-  file: string;
+  @Type(() => Files)
+  file: Files;
 }
 
 export default PostDto;

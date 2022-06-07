@@ -1,9 +1,14 @@
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
-import { User } from '../../users/schema/user.schema';
 import { Exclude, Type } from 'class-transformer';
+import {
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 import { Category } from '../../categories/category.schema';
 import { Series } from '../../series/series.schema';
-import { Files } from 'src/files/files.schema';
+import { User } from '../../users/schema/user.schema';
 
 export class UpdatePostDto {
   @IsOptional()
@@ -20,9 +25,14 @@ export class UpdatePostDto {
   @IsNotEmpty()
   content?: string;
 
-  @Type(() => Files)
-  @IsOptional()
-  file?: Files;
+  @IsMongoId()
+  @ValidateIf((obj) => {
+    /**
+     * if the user is not sent property, I will be ignored check is mongoid
+     */
+    return 'file' in obj;
+  })
+  file: string;
 
   @Type(() => Category)
   @IsOptional()

@@ -10,7 +10,7 @@ export class PaginationParams {
   @Type(() => Number)
   @IsNumber()
   @Min(0)
-  skip?: number;
+  offset?: number;
 
   @IsOptional()
   @Type(() => Number)

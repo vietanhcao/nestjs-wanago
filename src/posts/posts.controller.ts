@@ -11,8 +11,6 @@ import {
   Req,
   UseFilters,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import Role from 'src/authentication/enum/role.enum';
 // import PermissionGuard from 'src/authentication/guards/permission.guard';
@@ -42,7 +40,6 @@ export default class PostsController {
   // @CacheKey(GET_POSTS_CACHE_KEY)
   // @CacheTTL(120)
   @Get()
-  @UsePipes(new ValidationPipe({ whitelist: false })) // transform: true to active @Type(() => Number)
   async getAllPosts(
     @Query() { startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
@@ -53,7 +50,6 @@ export default class PostsController {
       // hide elastic search
       // return this.postsService.searchForPosts(search, skip, limit);
     }
-    console.log(query);
     const { result, pagination } = await this.postsService.findAll(
       startId,
       searchQuery,
@@ -68,7 +64,6 @@ export default class PostsController {
    */
   @Get('me')
   @UseGuards(RoleGuard(Role.User))
-  @UsePipes(new ValidationPipe({ whitelist: false })) // transform: true to active @Type(() => Number)
   async getAllPostsByUser(
     @Query() { startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,

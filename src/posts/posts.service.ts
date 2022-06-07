@@ -87,7 +87,7 @@ class PostsService {
           { path: 'file' },
         ],
         queryMongoose: filters,
-        omit: ['categories', 'title', '__v', 'createdAt'],
+        omit: ['categories', 'title', '__v', 'createdAt', 'comments'],
       },
     );
     // const results = await response;
@@ -120,7 +120,7 @@ class PostsService {
     const newPost = await createdPost.save();
     // hide elastic search
     // this.postsSearchService.indexPost(newPost);
-    await this.clearCache();
+    // await this.clearCache();
     return newPost;
   }
 
@@ -148,7 +148,7 @@ class PostsService {
     }
     const results = await findQuery;
     const count = await this.postModel.count();
-    await this.clearCache();
+    // await this.clearCache();
 
     return { results, count };
   }
@@ -170,7 +170,7 @@ class PostsService {
     //   await this.postsSearchService.update(updatedPost);
     //   return updatedPost;
     // }
-    await this.clearCache();
+    // await this.clearCache();
     throw new PostNotFoundException(id);
   }
 
@@ -180,7 +180,9 @@ class PostsService {
     // .setOptions({ overwrite: true, new: true })
     const post = await this.postModel
       //update partial
-      .updateOne({ _id: id, author }, postData, { new: true })
+      .findOneAndUpdate({ _id: id, author }, postData, {
+        new: true,
+      })
       .populate('author')
       .populate('categories')
       .populate('series');
@@ -191,7 +193,7 @@ class PostsService {
     //   await this.postsSearchService.update(post);
     //   return post;
     // }
-    await this.clearCache();
+    // await this.clearCache();
     return post;
   }
   async delete(postId: string, author: User) {
@@ -202,14 +204,14 @@ class PostsService {
     if (!result) {
       throw new NotFoundException();
     }
-    await this.clearCache();
+    // await this.clearCache();
     return result.id;
   }
   async deleteMany(
     ids: string[],
     session: mongoose.ClientSession | null = null,
   ) {
-    await this.clearCache();
+    // await this.clearCache();
     return this.postModel.deleteMany({ _id: ids }).session(session);
   }
 }
