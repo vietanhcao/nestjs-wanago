@@ -19,7 +19,6 @@ import RequestWithUser from 'src/authentication/requestWithUser.interface';
 import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
 import Resolve from 'src/common/helpers/Resolve';
 import { ExceptionsLoggerFilter } from 'src/utils/exceptionsLogger.filter';
-import { PaginationParams } from 'src/utils/paginationParams';
 import ParamsWithId from '../utils/paramsWithId';
 import PostDto from './dto/post.dto';
 import UpdatePostDto from './dto/updatePost.dto';
@@ -41,7 +40,7 @@ export default class PostsController {
   // @CacheTTL(120)
   @Get()
   async getAllPosts(
-    @Query() { startId }: PaginationParams,
+    // @Query() { startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
     @Query('search') search: string,
     @Query() query,
@@ -51,7 +50,7 @@ export default class PostsController {
       // return this.postsService.searchForPosts(search, skip, limit);
     }
     const { result, pagination } = await this.postsService.findAll(
-      startId,
+      null,
       searchQuery,
       null,
       query,
@@ -65,7 +64,7 @@ export default class PostsController {
   @Get('me')
   @UseGuards(RoleGuard(Role.User))
   async getAllPostsByUser(
-    @Query() { startId }: PaginationParams,
+    // @Query() { startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
     @Query('search') search: string,
     @Req() req: RequestWithUser,
@@ -76,7 +75,7 @@ export default class PostsController {
       // return this.postsService.searchForPosts(search, skip, limit);
     }
     const { result, pagination } = await this.postsService.findAll(
-      startId,
+      null,
       searchQuery,
       req.user,
       query,
