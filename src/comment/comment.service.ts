@@ -20,7 +20,10 @@ export class CommentService {
       query,
       {
         queryMongoose: { postId },
-        omit: ['owner', 'postId', 'createdAt', 'updatedAt'],
+        populate: [
+          { path: 'owner', select: 'email lastName firstName -_id' }, // exclude password
+        ],
+        omit: ['postId', 'createdAt', 'updatedAt'],
       },
     );
     // const results = await response;
