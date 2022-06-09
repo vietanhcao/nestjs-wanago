@@ -52,8 +52,9 @@ export class CommentController {
     @Body() comment: CommentDto,
     @Req() req: RequestWithUser,
   ) {
-    await this.commentService.create(comment, req.user);
-    return Resolve.ok(200, 'Success');
+    const response = await this.commentService.create(comment, req.user);
+    console.log(response);
+    return Resolve.ok(200, 'Success', { _id: response._id });
   }
 
   // @Delete(':id')
