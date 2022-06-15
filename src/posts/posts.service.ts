@@ -59,6 +59,7 @@ class PostsService {
         $search: searchQuery,
       };
     }
+    console.log(query);
 
     if (user) {
       filters.author = user;
