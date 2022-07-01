@@ -16,7 +16,7 @@ import Role from 'src/authentication/enum/role.enum';
 // import PermissionGuard from 'src/authentication/guards/permission.guard';
 import RoleGuard from 'src/authentication/guards/role.guard';
 import RequestWithUser from 'src/authentication/requestWithUser.interface';
-import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
+import JwtTwoFactorGuard from 'src/authentication/twoFactor/jwt-two-factor.guard';
 import Resolve from 'src/common/helpers/Resolve';
 import { ExceptionsLoggerFilter } from 'src/utils/exceptionsLogger.filter';
 import ParamsWithId from '../utils/paramsWithId';
@@ -91,7 +91,7 @@ export default class PostsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard) // use two-factor authentication
   async createPost(@Body() post: PostDto, @Req() req: RequestWithUser) {
     await this.postsService.create(post, req.user);
     return Resolve.ok(0, 'Success');
@@ -99,14 +99,14 @@ export default class PostsController {
 
   @Delete(':id')
   // @UseGuards(PermissionGuard(PostsPermission.DeletePost))
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   async deletePost(@Param() { id }: ParamsWithId, @Req() req: RequestWithUser) {
     await this.postsService.delete(id, req.user);
     return Resolve.ok(0, 'Success');
   }
 
   @Put(':id') // meaning update all filed
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   async updatePost(
     @Param() { id }: ParamsWithId,
     @Body() post: UpdatePostDto,
@@ -117,7 +117,7 @@ export default class PostsController {
   }
 
   @Patch(':id') // meaning update partial filed
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   async updatePostByPatch(
     @Param() { id }: ParamsWithId,
     @Body() post: UpdatePostDto,

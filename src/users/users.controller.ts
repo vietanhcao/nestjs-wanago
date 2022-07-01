@@ -11,20 +11,20 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Response } from 'express';
 import ParamsWithId from '../utils/paramsWithId';
 import { imageFileFilter } from 'src/files/helpers/file_upload.utils';
 import Resolve from 'src/common/helpers/Resolve';
+import JwtTwoFactorGuard from 'src/authentication/twoFactor/jwt-two-factor.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('files')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @UseInterceptors(FileInterceptor('file'))
   async addPrivateFile(
     @Req() request: RequestWithUser,
@@ -39,13 +39,13 @@ export class UsersController {
   }
 
   @Get('files')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   async getAllPrivateFiles(@Req() request: RequestWithUser) {
     return this.usersService.getAllPrivateFiles(request.user.id);
   }
 
   @Get('files/:id')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   async getPrivateFile(
     @Req() request: RequestWithUser,
     @Param() { id }: ParamsWithId,
@@ -56,7 +56,7 @@ export class UsersController {
   }
 
   @Post('avatar')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: imageFileFilter,
@@ -79,7 +79,7 @@ export class UsersController {
   }
 
   @Delete('avatar')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   async deleteAvatar(@Req() request: RequestWithUser) {
     await this.usersService.deleteAvatar(request.user.id);
     return Resolve.ok(0, 'Success');

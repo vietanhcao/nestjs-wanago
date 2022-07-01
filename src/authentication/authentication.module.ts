@@ -9,6 +9,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './token/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './token/jwt-refresh.strategy';
 import { EmailConfirmationModule } from 'src/email-confirmation/email-confirmation.module';
+import { TwoFactorAuthenticationController } from './twoFactor/twoFactorAuthentication.controller';
+import { TwoFactorAuthenticationService } from './twoFactor/twoFactorAuthentication.service';
+import { JwtTwoFactorStrategy } from './twoFactor/jwt-two-factor.strategy';
 
 @Module({
   imports: [
@@ -32,8 +35,10 @@ import { EmailConfirmationModule } from 'src/email-confirmation/email-confirmati
     LocalStrategy,
     JwtStrategy,
     JwtRefreshTokenStrategy,
+    TwoFactorAuthenticationService,
+    JwtTwoFactorStrategy,
   ], // imports to use in file controllers
-  controllers: [AuthenticationController],
+  controllers: [AuthenticationController, TwoFactorAuthenticationController],
   exports: [AuthenticationService],
 })
 export class AuthenticationModule {}

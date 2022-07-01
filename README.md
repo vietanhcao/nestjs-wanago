@@ -91,3 +91,11 @@ Bucket policy
 ```
 
 [Link](https://console.aws.amazon.com/s3/buckets/nestjs-series-public-bucket-wanago?region=ap-southeast-1&tab=objects)
+
+
+## Two-factor
+ Flow
+  - the user logs in using the email and the password, and we respond with a JWT token
+  - if the 2FA is turned off, we give full access to the user,
+  - if the 2FA is turned on, we provide the access just to the `/2fa/authenticate` endpoint
+  - the user looks up the Authenticator application code and sends it to the `/2fa/authenticate` endpoint; we respond with a new JWT token with full access.

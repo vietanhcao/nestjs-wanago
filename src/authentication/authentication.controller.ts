@@ -51,10 +51,9 @@ export class AuthenticationController {
    * @route Post /authentication/log-in
    * @access public
    */
-  @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
   @Post('log-in')
-  async logIn(@Req() request: RequestWithUser, @Res() response: Response) {
+  async logIn(@Req() request: RequestWithUser) {
     const { user } = request;
     const accessTokenCookie =
       this.authenticationService.getCookieWithJwtAccessToken(user.id);
@@ -71,14 +70,21 @@ export class AuthenticationController {
     ]);
     //remove password
     user.password = undefined;
-    // response cookie and token
-    return response.json(
-      Resolve.ok(200, 'Success', {
-        user,
+    // check two factor authentication
+    if (user.isTwoFactorAuthenticationEnabled) {
+      return Resolve.ok(200, 'Success', {
+        isTwoFactorAuthenticationEnabled: true,
         accessToken: accessTokenCookie.token,
         refreshToken: refreshTokenCookie.token,
-      }),
-    );
+      });
+    }
+
+    // response cookie and token;
+    return Resolve.ok(200, 'Success', {
+      user,
+      accessToken: accessTokenCookie.token,
+      refreshToken: refreshTokenCookie.token,
+    });
   }
 
   // /**

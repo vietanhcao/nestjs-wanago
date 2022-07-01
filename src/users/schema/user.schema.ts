@@ -77,6 +77,12 @@ export class User {
   @Prop({ type: FilesSchema }) // one to one relationship
   @Type(() => Files)
   avatar: Files;
+
+  @Prop()
+  twoFactorAuthenticationSecret?: string;
+
+  @Prop({ default: false })
+  isTwoFactorAuthenticationEnabled: boolean;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);

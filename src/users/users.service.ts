@@ -65,7 +65,9 @@ class UsersService {
     // });
     const user = await this.userModel
       .findOne({ email })
-      .select('lastName firstName password avatar role isEmailConfirmed email');
+      .select(
+        'lastName firstName password avatar role isEmailConfirmed email isTwoFactorAuthenticationEnabled',
+      );
     if (!user) {
       throw new NotFoundException();
     }
@@ -87,7 +89,7 @@ class UsersService {
     const user = await this.userModel
       .findById(id)
       .select(
-        'lastName firstName password avatar role currentHashedRefreshToken',
+        'lastName firstName avatar role currentHashedRefreshToken email twoFactorAuthenticationSecret isTwoFactorAuthenticationEnabled',
       );
     if (!user) {
       throw new NotFoundException();
@@ -197,6 +199,26 @@ class UsersService {
 
     return this.postsService.deleteMany(
       posts.map((post) => post._id.toString()),
+    );
+  }
+
+  async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
+    return this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        twoFactorAuthenticationSecret: secret,
+      },
+      { new: true },
+    );
+  }
+
+  async turnOnTwoFactorAuthentication(userId: string) {
+    return this.userModel.findByIdAndUpdate(
+      { _id: userId },
+      { isTwoFactorAuthenticationEnabled: true },
+      {
+        new: true,
+      },
     );
   }
 
