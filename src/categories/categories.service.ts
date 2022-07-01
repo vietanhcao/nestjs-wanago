@@ -12,6 +12,10 @@ class CategoriesService {
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
   ) {}
 
+  /**
+   * A method that fetches the categories from the database
+   * @returns A promise with the list of categories
+   */
   async findAll() {
     return this.categoryModel.find().populate('author');
     // return this.categoryModel.find();
@@ -43,6 +47,10 @@ class CategoriesService {
     return category;
   }
 
+  /**
+   * A method that deletes a category from the database
+   * @param categoryId An id of a category. A category with this id should exist in the database
+   */
   async delete(categoryId: string) {
     const result = await this.categoryModel.findByIdAndDelete(categoryId);
     if (!result) {
