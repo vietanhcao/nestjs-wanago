@@ -22,7 +22,7 @@ class UsersService {
     @InjectConnection() private readonly connection: mongoose.Connection, // connection we’ve established
   ) {}
 
-  async setCurrentRefreshToken(refreshToken: string, userId: number) {
+  async setCurrentRefreshToken(refreshToken: string, userId: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     const user = await this.userModel.findByIdAndUpdate(
       { _id: userId },
@@ -34,7 +34,7 @@ class UsersService {
     }
   }
 
-  async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
+  async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
     const user = await this.getById(userId);
     const isRefreshTokenMatching = await bcrypt.compare(
       refreshToken,
@@ -75,7 +75,7 @@ class UsersService {
     return user;
   }
 
-  async getById(id: number) {
+  async getById(id: string) {
     // nested populate
     // const user = await this.userModel.findById(id).populate([
     //   {
@@ -112,8 +112,18 @@ class UsersService {
     });
     return avatar;
   }
+  async createWithGoogle(email: string, name: string) {
+    // const stripeCustomer = await this.stripeService.createCustomer(name, email);
 
-  async deleteAvatar(userId: number) {
+    const createdUser = new this.userModel({
+      email,
+      name,
+      isRegisteredWithGoogle: true,
+    });
+    return createdUser.save();
+  }
+
+  async deleteAvatar(userId: string) {
     const user = await this.getById(userId);
     const fileId = user.avatar?._id;
 
@@ -151,7 +161,7 @@ class UsersService {
     throw new UnauthorizedException();
   }
 
-  async getAllPrivateFiles(userId: number) {
+  async getAllPrivateFiles(userId: string) {
     const userWithFiles = await this.getById(userId);
     if (userWithFiles.files) {
       return Promise.all(

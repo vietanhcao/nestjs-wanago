@@ -16,7 +16,7 @@ export class AuthenticationService {
   ) {}
 
   public getCookieWithJwtAccessToken(
-    userId: number,
+    userId: string,
     isSecondFactorAuthenticated = false,
   ) {
     const payload: TokenPayload = { userId, isSecondFactorAuthenticated };
@@ -35,7 +35,7 @@ export class AuthenticationService {
   }
 
   public getCookieWithJwtRefreshToken(
-    userId: number,
+    userId: string,
     isSecondFactorAuthenticated = false,
   ) {
     const payload: TokenPayload = { userId, isSecondFactorAuthenticated };

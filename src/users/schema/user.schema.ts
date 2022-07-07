@@ -83,6 +83,9 @@ export class User {
 
   @Prop({ default: false })
   isTwoFactorAuthenticationEnabled: boolean;
+
+  @Prop({ default: false })
+  public isRegisteredWithGoogle: boolean;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);

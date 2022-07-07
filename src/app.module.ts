@@ -19,6 +19,7 @@ import { OptimizeModule } from './optimize/optimize.module';
 import PostsModule from './posts/posts.module';
 import SeriesModule from './series/series.module';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
+import { GoogleAuthenticationModule } from './google-authentication/google-authentication.module';
 import LogsMiddleware from './utils/logs.middleware';
 
 @Module({
@@ -52,6 +53,9 @@ import LogsMiddleware from './utils/logs.middleware';
         JWT_VERIFICATION_TOKEN_SECRET: Joi.string().required(),
         JWT_VERIFICATION_TOKEN_EXPIRATION_TIME: Joi.string().required(),
         EMAIL_CONFIRMATION_URL: Joi.string().required(),
+
+        GOOGLE_AUTH_CLIENT_ID: Joi.string().required(),
+        GOOGLE_AUTH_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
     BullModule.forRootAsync({
@@ -99,6 +103,7 @@ import LogsMiddleware from './utils/logs.middleware';
     LogsModule,
     OptimizeModule,
     EmailConfirmationModule,
+    GoogleAuthenticationModule,
   ],
   controllers: [],
   providers: [
