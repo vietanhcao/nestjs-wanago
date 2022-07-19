@@ -1,7 +1,7 @@
 import RegisterDto from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import MongoError from '../utils/mongoError.enum';
+import MongoError from '../database/mongoError.enum';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import TokenPayload from './tokenPayload.interface';

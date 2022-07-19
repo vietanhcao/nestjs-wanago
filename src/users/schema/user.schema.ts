@@ -41,7 +41,7 @@ export class User {
   @Prop({ default: Role.User, enum: Role })
   role: Role;
 
-  @Prop({ default: ['DeletePost'], type: [String] })
+  @Prop({ default: ['DeletePost', 'CreateCategory'], type: [String] })
   permissions: Permission[];
 
   // refreshToken
