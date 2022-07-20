@@ -3,6 +3,7 @@ import {
   Controller,
   Post,
   Req,
+  Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import TwoFactorAuthenticationCodeDto from '../dto/twoFactor.dto';
 import RequestWithUser from '../requestWithUser.interface';
 import JwtAuthenticationGuard from '../token/jwt-authentication.guard';
 import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
+import { Response } from 'express';
 
 @Controller('2fa')
 export class TwoFactorAuthenticationController {
@@ -39,6 +41,24 @@ export class TwoFactorAuthenticationController {
     );
     return Resolve.ok(0, 'Success', { buffer, secret });
   }
+
+  @Post('generate-with-stream-file') // for development
+  @UseGuards(JwtAuthenticationGuard)
+  async registerWithStreamFile(
+    @Req() request: RequestWithUser,
+    @Res() response: Response,
+  ) {
+    const { otpauthUrl } =
+      await this.twoFactorAuthenticationService.generateAuthenticationSecret(
+        request.user,
+      );
+
+    return this.twoFactorAuthenticationService.pipeQrCodeStream(
+      response,
+      otpauthUrl,
+    );
+  }
+
   @Post('turn-on')
   @UseGuards(JwtAuthenticationGuard)
   async turnOnTwoFactorAuthentication(
