@@ -1,5 +1,6 @@
 import UsersService from './users.service';
 import {
+  BadRequestException,
   Controller,
   Delete,
   Get,
@@ -18,6 +19,9 @@ import ParamsWithId from '../utils/paramsWithId';
 import { imageFileFilter } from 'src/files/helpers/file_upload.utils';
 import Resolve from 'src/common/helpers/Resolve';
 import JwtTwoFactorGuard from 'src/authentication/twoFactor/jwt-two-factor.guard';
+import LocalFilesInterceptor from 'src/local-files/local-files.interceptor';
+import LocalFilePermission from 'src/local-files/enum/localFilePermission.enum';
+import Permission2FaGuard from 'src/authentication/guards/permission2FA.guard';
 
 @Controller('users')
 export class UsersController {
@@ -76,6 +80,39 @@ export class UsersController {
     );
 
     return Resolve.ok(0, 'Success', response);
+  }
+
+  @Post('file-local')
+  @UseGuards(Permission2FaGuard(LocalFilePermission.CreateFile))
+  @UseInterceptors(
+    LocalFilesInterceptor({
+      fieldName: 'file',
+      path: '/files-local',
+      fileFilter: (request, file, callback) => {
+        if (!file.mimetype.includes('image')) {
+          return callback(
+            new BadRequestException('Provide a valid image'),
+            false,
+          );
+        }
+        callback(null, true);
+      },
+      limits: {
+        fileSize: Math.pow(1024, 2), // 1MB || 10e6
+      },
+    }),
+  )
+  async addAvatarServerStore(
+    @Req() request: RequestWithUser,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    await this.usersService.addFileLocal(request.user, {
+      path: file.path,
+      filename: file.originalname,
+      mimetype: file.mimetype,
+    });
+
+    return Resolve.ok(0, 'Success');
   }
 
   @Delete('avatar')

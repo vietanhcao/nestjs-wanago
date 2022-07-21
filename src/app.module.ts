@@ -20,6 +20,7 @@ import { OptimizeModule } from './optimize/optimize.module';
 import PostsModule from './posts/posts.module';
 import SeriesModule from './series/series.module';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
+import { LocalFilesModule } from './local-files/local-files.module';
 import LogsMiddleware from './utils/logs.middleware';
 
 @Module({
@@ -59,6 +60,8 @@ import LogsMiddleware from './utils/logs.middleware';
 
         GOOGLE_AUTH_CLIENT_ID: Joi.string().required(),
         GOOGLE_AUTH_CLIENT_SECRET: Joi.string().required(),
+
+        UPLOADED_FILES_DESTINATION: Joi.string().required(),
       }),
     }),
     BullModule.forRootAsync({
@@ -92,6 +95,7 @@ import LogsMiddleware from './utils/logs.middleware';
     EmailConfirmationModule,
     GoogleAuthenticationModule,
     DatabaseModule,
+    LocalFilesModule,
   ],
   controllers: [],
   providers: [

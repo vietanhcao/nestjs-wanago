@@ -406,3 +406,6 @@ yarn.lock
 
 # doc 
 /documentation
+
+# upload
+/uploadedFiles

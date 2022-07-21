@@ -3,21 +3,23 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { UserDocument, User } from './schema/user.schema';
-import CreateUserDto from './dto/createUser.dto';
-import PostsService from '../posts/posts.service';
-import FilesService from '../files/files.service';
-import { InjectConnection } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
+import * as mongoose from 'mongoose';
+import { Model } from 'mongoose';
+import LocalFileDto from 'src/local-files/local-files.dto';
+import { LocalFilesService } from 'src/local-files/local-files.service';
+import FilesService from '../files/files.service';
+import PostsService from '../posts/posts.service';
+import CreateUserDto from './dto/createUser.dto';
+import { User, UserDocument } from './schema/user.schema';
 
 @Injectable()
 class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly postsService: PostsService,
+    private readonly localFilesService: LocalFilesService,
     private readonly filesService: FilesService,
     @InjectConnection() private readonly connection: mongoose.Connection, // connection we’ve established
   ) {}
@@ -111,6 +113,14 @@ class UsersService {
       new: true,
     });
     return avatar;
+  }
+
+  async addFileLocal(user: User, fileData: LocalFileDto) {
+    await this.localFilesService.saveLocalFileData(fileData, user);
+
+    // await this.usersRepository.update(userId, {
+    //   avatarId: avatar.id,
+    // });
   }
   async createWithGoogle(email: string, name: string) {
     // const stripeCustomer = await this.stripeService.createCustomer(name, email);
