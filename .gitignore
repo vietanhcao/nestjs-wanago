@@ -409,3 +409,6 @@ yarn.lock
 
 # upload
 /uploadedFiles
+
+# zip
+*.zip
