@@ -1,7 +1,7 @@
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import LeverLog from 'src/logs/leverLog.enum';
-import { LogsService } from 'src/logs/logs.service';
+import LeverLog from '../logs/leverLog.enum';
+import { LogsService } from '../logs/logs.service';
 
 @Injectable()
 class LogsMiddleware implements NestMiddleware {

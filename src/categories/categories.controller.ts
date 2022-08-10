@@ -10,7 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import PermissionGuard from 'src/authentication/guards/permission.guard';
+import PermissionGuard from '../authentication/guards/permission.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
 import ParamsWithId from '../utils/paramsWithId';

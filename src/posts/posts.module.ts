@@ -1,7 +1,7 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SearchModule } from 'src/search/search.module';
+import { SearchModule } from '../search/search.module';
 import { Post, PostSchema } from './post.schema';
 import PostsController from './posts.controller';
 import PostsService from './posts.service';

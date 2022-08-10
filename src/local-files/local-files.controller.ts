@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Res, StreamableFile } from '@nestjs/common';
 import { createReadStream } from 'fs';
-import ParamsWithId from 'src/utils/paramsWithId';
+import ParamsWithId from '../utils/paramsWithId';
 import { LocalFilesService } from './local-files.service';
 import { Response } from 'express';
 import { join } from 'path';

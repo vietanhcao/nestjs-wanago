@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 import RequestWithUser from '../requestWithUser.interface';
 import JwtAuthenticationGuard from '../token/jwt-authentication.guard';
-import Permission from 'src/authentication/enum/permission.enum';
+import Permission from '../../authentication/enum/permission.enum';
 import Role from '../enum/role.enum';
 
 const PermissionGuard = (permission: Permission): Type<CanActivate> => {

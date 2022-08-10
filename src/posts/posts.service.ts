@@ -9,7 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Cache } from 'cache-manager';
 import * as mongoose from 'mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import ClientQuery from 'src/common/client-query';
+import ClientQuery from '../common/client-query';
 import { User } from '../users/schema/user.schema';
 import { GET_POSTS_CACHE_KEY } from './cache/postsCacheKey.constant';
 import { PostDto } from './dto/post.dto';

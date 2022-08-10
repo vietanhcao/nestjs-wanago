@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { WsException } from '@nestjs/websockets';
 import mongoose, { Model } from 'mongoose';
 import { Socket } from 'socket.io';
-import { AuthenticationService } from 'src/authentication/authentication.service';
-import ClientQuery from 'src/common/client-query';
-import { User } from 'src/users/schema/user.schema';
+import { AuthenticationService } from '../authentication/authentication.service';
+import ClientQuery from '../common/client-query';
+import { User } from '../users/schema/user.schema';
 import { Message, MessageDocument } from './message.schema';
 
 @Injectable()

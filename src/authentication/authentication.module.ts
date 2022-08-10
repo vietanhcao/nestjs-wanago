@@ -8,7 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './token/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './token/jwt-refresh.strategy';
-import { EmailConfirmationModule } from 'src/email-confirmation/email-confirmation.module';
+import { EmailConfirmationModule } from '../email-confirmation/email-confirmation.module';
 import { TwoFactorAuthenticationController } from './twoFactor/twoFactorAuthentication.controller';
 import { TwoFactorAuthenticationService } from './twoFactor/twoFactorAuthentication.service';
 import { JwtTwoFactorStrategy } from './twoFactor/jwt-two-factor.strategy';

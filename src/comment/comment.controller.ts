@@ -8,9 +8,9 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
-import Resolve from 'src/common/helpers/Resolve';
-// import { PaginationParams } from 'src/utils/paginationParams';
+import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
+import Resolve from '../common/helpers/Resolve';
+// import { PaginationParams } from '../utils/paginationParams';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import ParamsWithId from '../utils/paramsWithId';
 import { CommentService } from './comment.service';

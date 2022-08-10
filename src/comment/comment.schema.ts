@@ -1,9 +1,9 @@
-import { User } from 'src/users/schema/user.schema';
+import { User } from '../users/schema/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
 import { Transform, Type } from 'class-transformer';
 import * as mongoose from 'mongoose';
-import { Post } from 'src/posts/post.schema';
+import { Post } from '../posts/post.schema';
 
 export type CommentsDocument = Comments & Document;
 

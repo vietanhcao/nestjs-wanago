@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import Role from 'src/authentication/enum/role.enum';
-import RoleGuard from 'src/authentication/guards/role.guard';
-import Resolve from 'src/common/helpers/Resolve';
+import Role from '../authentication/enum/role.enum';
+import RoleGuard from '../authentication/guards/role.guard';
+import Resolve from '../common/helpers/Resolve';
 import { ChatService } from './chat.service';
 
 @Controller('chat')

@@ -12,13 +12,13 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import Role from 'src/authentication/enum/role.enum';
-// import PermissionGuard from 'src/authentication/guards/permission.guard';
-import RoleGuard from 'src/authentication/guards/role.guard';
-import RequestWithUser from 'src/authentication/requestWithUser.interface';
-import JwtTwoFactorGuard from 'src/authentication/twoFactor/jwt-two-factor.guard';
-import Resolve from 'src/common/helpers/Resolve';
-import { ExceptionsLoggerFilter } from 'src/utils/exceptionsLogger.filter';
+import Role from '../authentication/enum/role.enum';
+// import PermissionGuard from '../authentication/guards/permission.guard';
+import RoleGuard from '../authentication/guards/role.guard';
+import RequestWithUser from '../authentication/requestWithUser.interface';
+import JwtTwoFactorGuard from '../authentication/twoFactor/jwt-two-factor.guard';
+import Resolve from '../common/helpers/Resolve';
+import { ExceptionsLoggerFilter } from '../utils/exceptionsLogger.filter';
 import ParamsWithId from '../utils/paramsWithId';
 import PostDto from './dto/post.dto';
 import UpdatePostDto from './dto/updatePost.dto';

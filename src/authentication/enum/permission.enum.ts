@@ -1,6 +1,6 @@
-import CategoriesPermission from 'src/categories/enum/categoriesPermission.enum';
-import LocalFilePermission from 'src/local-files/enum/localFilePermission.enum';
-import PostsPermission from 'src/posts/enum/postsPermission.enum';
+import CategoriesPermission from '../../categories/enum/categoriesPermission.enum';
+import LocalFilePermission from '../../local-files/enum/localFilePermission.enum';
+import PostsPermission from '../../posts/enum/postsPermission.enum';
 
 const Permission = {
   ...PostsPermission,

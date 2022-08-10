@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
 import { Document, ObjectId } from 'mongoose';
-import { User } from 'src/users/schema/user.schema';
+import { User } from '../users/schema/user.schema';
 import * as mongoose from 'mongoose';
 
 export type LocalFilesDocument = LocalFiles & Document;

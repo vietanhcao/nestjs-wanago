@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Auth, google } from 'googleapis';
-import { AuthenticationService } from 'src/authentication/authentication.service';
-import { User } from 'src/users/schema/user.schema';
-import UsersService from 'src/users/users.service';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { User } from '../users/schema/user.schema';
+import UsersService from '../users/users.service';
 
 @Injectable()
 export class GoogleAuthenticationService {

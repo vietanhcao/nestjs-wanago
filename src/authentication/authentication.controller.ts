@@ -13,9 +13,9 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
-import Resolve from 'src/common/helpers/Resolve';
-import { EmailConfirmationService } from 'src/email-confirmation/email-confirmation.service';
-import ParamsWithId from 'src/utils/paramsWithId';
+import Resolve from '../common/helpers/Resolve';
+import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
+import ParamsWithId from '../utils/paramsWithId';
 import UsersService from '../users/users.service';
 import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';

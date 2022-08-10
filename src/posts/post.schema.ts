@@ -4,10 +4,10 @@ import * as mongoose from 'mongoose';
 import { User } from '../users/schema/user.schema';
 import { Transform, Type } from 'class-transformer';
 import { Category } from '../categories/category.schema';
-import { Series } from 'src/series/series.schema';
-// import { PrivateFile } from 'src/files/privateFiles.schema';
-import { Comments } from 'src/comment/comment.schema';
-import { Files } from 'src/files/files.schema';
+import { Series } from '../series/series.schema';
+// import { PrivateFile } from '../files/privateFiles.schema';
+import { Comments } from '../comment/comment.schema';
+import { Files } from '../files/files.schema';
 // import { Series } from '../series/series.schema';
 
 export type PostDocument = Post & Document;

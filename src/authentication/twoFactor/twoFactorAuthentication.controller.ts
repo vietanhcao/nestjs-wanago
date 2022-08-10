@@ -7,8 +7,8 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import Resolve from 'src/common/helpers/Resolve';
-import UsersService from 'src/users/users.service';
+import Resolve from '../../common/helpers/Resolve';
+import UsersService from '../../users/users.service';
 import { AuthenticationService } from '../authentication.service';
 import TwoFactorAuthenticationCodeDto from '../dto/twoFactor.dto';
 import RequestWithUser from '../requestWithUser.interface';

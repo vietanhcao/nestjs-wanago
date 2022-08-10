@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 import RequestWithUser from '../requestWithUser.interface';
-import Permission from 'src/authentication/enum/permission.enum';
+import Permission from '../../authentication/enum/permission.enum';
 import Role from '../enum/role.enum';
 import JwtTwoFactorGuard from '../twoFactor/jwt-two-factor.guard';
 

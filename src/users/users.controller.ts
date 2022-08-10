@@ -16,12 +16,12 @@ import RequestWithUser from '../authentication/requestWithUser.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Response } from 'express';
 import ParamsWithId from '../utils/paramsWithId';
-import { imageFileFilter } from 'src/files/helpers/file_upload.utils';
-import Resolve from 'src/common/helpers/Resolve';
-import JwtTwoFactorGuard from 'src/authentication/twoFactor/jwt-two-factor.guard';
-import LocalFilesInterceptor from 'src/local-files/local-files.interceptor';
-import LocalFilePermission from 'src/local-files/enum/localFilePermission.enum';
-import Permission2FaGuard from 'src/authentication/guards/permission2FA.guard';
+import { imageFileFilter } from '../files/helpers/file_upload.utils';
+import Resolve from '../common/helpers/Resolve';
+import JwtTwoFactorGuard from '../authentication/twoFactor/jwt-two-factor.guard';
+import LocalFilesInterceptor from '../local-files/local-files.interceptor';
+import LocalFilePermission from '../local-files/enum/localFilePermission.enum';
+import Permission2FaGuard from '../authentication/guards/permission2FA.guard';
 
 @Controller('users')
 export class UsersController {

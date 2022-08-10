@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import ClientQuery from 'src/common/client-query';
+import ClientQuery from '../common/client-query';
 import { User } from '../users/schema/user.schema';
 import { Comments, CommentsDocument } from './comment.schema';
 import CommentDto from './dto/comment.dto';

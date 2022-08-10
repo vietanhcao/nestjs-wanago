@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
-import { dataSelectCity } from 'src/common/dataDefault';
-import Resolve from 'src/common/helpers/Resolve';
+import { dataSelectCity } from '../common/dataDefault';
+import Resolve from '../common/helpers/Resolve';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
 import ParamsWithId from '../utils/paramsWithId';

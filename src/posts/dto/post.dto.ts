@@ -1,5 +1,5 @@
 import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
-import { Files } from 'src/files/files.schema';
+import { Files } from '../../files/files.schema';
 
 export class PostDto {
   @IsString()

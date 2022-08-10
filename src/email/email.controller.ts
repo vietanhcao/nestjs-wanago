@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import Role from 'src/authentication/enum/role.enum';
-import RoleGuard from 'src/authentication/guards/role.guard';
-import Resolve from 'src/common/helpers/Resolve';
+import Role from '../authentication/enum/role.enum';
+import RoleGuard from '../authentication/guards/role.guard';
+import Resolve from '../common/helpers/Resolve';
 import EmailDto from './email.dto';
 import { EmailService } from './email.service';
 

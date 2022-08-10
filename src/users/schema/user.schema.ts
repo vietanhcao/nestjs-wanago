@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import { Document, ObjectId } from 'mongoose';
-import { PrivateFile } from 'src/files/privateFiles.schema';
+import { PrivateFile } from '../../files/privateFiles.schema';
 import Permission from '../../authentication/enum/permission.enum';
 import Role from '../../authentication/enum/role.enum';
 import { Files, FilesSchema } from '../../files/files.schema';

@@ -10,8 +10,8 @@ import {
 import ConfirmEmailDto from './confirmEmail.dto';
 import { EmailConfirmationService } from './email-confirmation.service';
 import RequestWithUser from '../authentication/requestWithUser.interface';
-import JwtAuthenticationGuard from 'src/authentication/token/jwt-authentication.guard';
-import Resolve from 'src/common/helpers/Resolve';
+import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
+import Resolve from '../common/helpers/Resolve';
 
 @Controller('email-confirmation')
 @UseInterceptors(ClassSerializerInterceptor)
