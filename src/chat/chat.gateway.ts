@@ -91,7 +91,7 @@ export default class ChatGateway
   @SubscribeMessage('request_all_messages')
   async requestAllMessages(@ConnectedSocket() socket: Socket) {
     await this.chatService.getUserFromSocket(socket);
-    // const messages = await this.chatService.getAllMessages();
+    const messages = await this.chatService.getAllMessages();
 
     socket.emit('send_all_messages', messages);
   }
