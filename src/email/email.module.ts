@@ -35,7 +35,10 @@ import { MailController } from './email.controller';
             from: '"test" <noreply@test.com.vn>',
           },
           template: {
-            // cwd = current working directory
+            /**
+              process.cwd() returns the value of directory where we run the node process, whereas
+              __dirname returns the value of directory where the current running file resides.
+             * */
             dir: process.cwd() + '/templates',
             adapter: new HandlebarsAdapter(),
             options: {
