@@ -102,7 +102,7 @@ import LogsMiddleware from './utils/logs.middleware';
     AppService,
     {
       provide: APP_FILTER,
-      useClass: ExceptionsLoggerFilter,
+      useClass: ExceptionsLoggerFilter, // sử dựng custom filter  để log exception thay thế cho default filter
     },
   ],
 })
