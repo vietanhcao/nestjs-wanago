@@ -10,6 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
+import { Logger } from '@nestjs/common';
 
 interface msgToServerPayload {
   message: string;
@@ -64,7 +65,7 @@ export default class ChatGateway
   }
 
   afterInit(server: Server) {
-    console.log('Init', 'server', server);
+    Logger.log('Init server:::', server);
   }
 
   @SubscribeMessage('send_message')

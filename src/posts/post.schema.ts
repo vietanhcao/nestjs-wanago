@@ -20,6 +20,9 @@ export class Post {
   @Prop()
   title: string;
 
+  // @Prop({ type: Date, default: Date.now, index: { expires: 20 } })
+  // time: Date;
+
   @Prop({
     //can modify the data before saving it in the database.
     set: (content: string) => {
