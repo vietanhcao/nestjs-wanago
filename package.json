@@ -46,6 +46,7 @@
     "@types/cron": "^1.7.3",
     "@types/imagemin": "^7.0.0",
     "adm-zip": "^0.5.9",
+    "assert": "^2.0.0",
     "aws-sdk": "^2.1053.0",
     "bcrypt": "^5.0.1",
     "bull": "^4.7.0",
@@ -70,7 +71,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.4.0",
     "socket.io-redis": "^6.1.1",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.19",

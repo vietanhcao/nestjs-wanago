@@ -3,6 +3,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
 import EmailDto from './email.dto';
+import { ITypeSendEmailOtp } from './type';
 
 @Injectable()
 export class EmailService {
@@ -20,6 +21,15 @@ export class EmailService {
       console.log('Error queueing confirmation email to user.');
       return false;
     }
+  }
+
+  async sendOtpEmail(dto: ITypeSendEmailOtp): Promise<boolean> {
+    const text = `Please use the verification code below to sign in. \n\n OTP: ${dto.otp}`;
+    return this.sendConfirmationEmail({
+      recipient: dto.email,
+      subject: 'Verification code',
+      content: text,
+    });
   }
 
   public async sendMail(data: EmailDto) {

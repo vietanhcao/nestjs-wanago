@@ -15,14 +15,14 @@ import { EmailSchedulingModule } from './emailScheduling/emailSchedule.module';
 import FilesModule from './files/files.module';
 import { GoogleAuthenticationModule } from './google-authentication/google-authentication.module';
 import HealthModule from './health/health.module';
+import { LocalFilesModule } from './local-files/local-files.module';
 import { LogsModule } from './logs/logs.module';
 import { OptimizeModule } from './optimize/optimize.module';
 import PostsModule from './posts/posts.module';
 import SeriesModule from './series/series.module';
+import { ServiceOtpModule } from './service-otp/service-otp.module';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
-import { LocalFilesModule } from './local-files/local-files.module';
 import LogsMiddleware from './utils/logs.middleware';
-
 @Module({
   imports: [
     // The  ConfigModule built into NestJS supports @hapi/joi that we can use to define a validation schema.
@@ -64,6 +64,7 @@ import LogsMiddleware from './utils/logs.middleware';
         UPLOADED_FILES_DESTINATION: Joi.string().required(),
       }),
     }),
+
     BullModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -96,6 +97,7 @@ import LogsMiddleware from './utils/logs.middleware';
     GoogleAuthenticationModule,
     DatabaseModule,
     LocalFilesModule,
+    ServiceOtpModule,
   ],
   controllers: [],
   providers: [
