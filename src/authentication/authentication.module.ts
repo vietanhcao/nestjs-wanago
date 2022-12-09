@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { UsersModule } from '../users/users.module';
 import { AuthenticationController } from './authentication.controller';
@@ -12,6 +12,7 @@ import { EmailConfirmationModule } from '../email-confirmation/email-confirmatio
 import { TwoFactorAuthenticationController } from './twoFactor/twoFactorAuthentication.controller';
 import { TwoFactorAuthenticationService } from './twoFactor/twoFactorAuthentication.service';
 import { JwtTwoFactorStrategy } from './twoFactor/jwt-two-factor.strategy';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -27,6 +28,16 @@ import { JwtTwoFactorStrategy } from './twoFactor/jwt-two-factor.strategy';
         signOptions: {
           expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}`,
         },
+      }),
+    }),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        store: redisStore,
+        host: configService.get('REDIS_HOST'),
+        port: configService.get('REDIS_PORT'),
+        ttl: 120,
       }),
     }),
   ], // imports to use in file service

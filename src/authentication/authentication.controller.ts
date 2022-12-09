@@ -1,9 +1,12 @@
 import {
   Body,
+  CacheStore,
+  CACHE_MANAGER,
   Controller,
   Delete,
   Get,
   HttpCode,
+  Inject,
   Param,
   Post,
   Req,
@@ -25,6 +28,7 @@ import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import RequestWithUser from './requestWithUser.interface';
 import JwtAuthenticationGuard from './token/jwt-authentication.guard';
 import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
+import { CacheBuilder } from 'src/common/builder/cache.builder';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -32,6 +36,8 @@ export class AuthenticationController {
     private readonly authenticationService: AuthenticationService,
     private readonly usersService: UsersService, // import another service
     private readonly emailConfirmationService: EmailConfirmationService, // import another service
+    @Inject(CACHE_MANAGER)
+    private readonly cacheStore: CacheStore,
   ) {}
 
   //dto validation
@@ -167,9 +173,20 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   @Get()
   // @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
-  authenticate(@Req() request: RequestWithUser) {
-    const user = request.user;
-    // user.password = undefined;
+  async authenticate(@Req() request: RequestWithUser) {
+    // cache builder
+    const builder = new CacheBuilder();
+    const callback = () => {
+      return request.user;
+    };
+    const cacheKey = `authentication:${request.user.email}`;
+    const user = await builder
+      .setCacheKey(cacheKey)
+      .setCacheStore(this.cacheStore)
+      .setCallback(callback)
+      .ttl(60 * 60)
+      .build<string>();
+
     return Resolve.ok(200, 'Success', user);
   }
 
