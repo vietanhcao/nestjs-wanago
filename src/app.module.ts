@@ -4,6 +4,7 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import CategoriesModule from './categories/categories.module';
@@ -21,6 +22,7 @@ import { OptimizeModule } from './optimize/optimize.module';
 import PostsModule from './posts/posts.module';
 import SeriesModule from './series/series.module';
 import { ServiceOtpModule } from './service-otp/service-otp.module';
+import { ShutdownService } from './shutdown.service';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import LogsMiddleware from './utils/logs.middleware';
 @Module({
@@ -99,9 +101,10 @@ import LogsMiddleware from './utils/logs.middleware';
     LocalFilesModule,
     ServiceOtpModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     AppService,
+    ShutdownService,
     {
       provide: APP_FILTER,
       useClass: ExceptionsLoggerFilter, // sử dựng custom filter  để log exception thay thế cho default filter

@@ -8,6 +8,7 @@ import { AppModule } from './app.module';
 import { RedisIoAdapter } from './chat/adapters/redisIoAdapter';
 import { AllExceptionsFilter } from './common/exceptions/all-exception.filter';
 import { ValidationException } from './common/exceptions/validation-exception.filter';
+import { ShutdownService } from './shutdown.service';
 import getLogLevels from './utils/getLogLevels';
 
 async function bootstrap() {
@@ -49,6 +50,12 @@ async function bootstrap() {
 
   // await app.listen(3000);
   app.useWebSocketAdapter(new RedisIoAdapter(app, configService));
+
+  // shutdown service
+  app.get(ShutdownService).subscribeToShutdown(async () => {
+    await app.close();
+    process.exit(0);
+  });
 
   await app.listen(process.env.PORT, '0.0.0.0');
   // console.log(`SERVER (${process.pid}) IS RUNNING ON `, process.env.PORT);
