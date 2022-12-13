@@ -24,6 +24,7 @@ import SeriesModule from './series/series.module';
 import { ServiceOtpModule } from './service-otp/service-otp.module';
 import { ShutdownService } from './shutdown.service';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
+import { ServiceApproveModule } from './service-approve/service-approve.module';
 import LogsMiddleware from './utils/logs.middleware';
 @Module({
   imports: [
@@ -100,6 +101,7 @@ import LogsMiddleware from './utils/logs.middleware';
     DatabaseModule,
     LocalFilesModule,
     ServiceOtpModule,
+    ServiceApproveModule,
   ],
   controllers: [AppController],
   providers: [

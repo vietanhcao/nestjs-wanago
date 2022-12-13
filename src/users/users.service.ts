@@ -91,7 +91,7 @@ class UsersService {
     const user = await this.userModel
       .findById(id)
       .select(
-        'lastName firstName avatar role currentHashedRefreshToken email twoFactorAuthenticationSecret isTwoFactorAuthenticationEnabled',
+        'lastName firstName avatar role currentHashedRefreshToken email twoFactorAuthenticationSecret isTwoFactorAuthenticationEnabled permissions',
       );
     if (!user) {
       throw new NotFoundException();

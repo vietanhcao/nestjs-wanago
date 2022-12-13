@@ -5,6 +5,8 @@ import { Category, CategoryDocument } from './category.schema';
 import { NotFoundException } from '@nestjs/common';
 import CategoryDto from './dto/category.dto';
 import { User } from '../users/schema/user.schema';
+import ClientQuery from 'src/common/client-query/client-query';
+import { QueryParse } from 'src/common/client-query/client-query.type';
 
 @Injectable()
 class CategoriesService {
@@ -16,9 +18,13 @@ class CategoriesService {
    * A method that fetches the categories from the database
    * @returns A promise with the list of categories
    */
-  async findAll() {
-    return this.categoryModel.find().populate('author');
-    // return this.categoryModel.find();
+  async findAll(query: QueryParse) {
+    const client = new ClientQuery(this.categoryModel);
+    const response = await client.findForQuery(query, {
+      populate: { path: 'author', select: '-password' },
+    });
+
+    return { ...response, result: response.hits };
   }
 
   async findOne(id: string) {

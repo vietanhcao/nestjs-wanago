@@ -6,10 +6,14 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import JwtTwoFactorGuard from 'src/authentication/twoFactor/jwt-two-factor.guard';
+import { QueryParse } from 'src/common/client-query/client-query.type';
+import Resolve from 'src/common/helpers/Resolve';
 import PermissionGuard from '../authentication/guards/permission.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
@@ -25,8 +29,10 @@ export default class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  async getAllCategories() {
-    return this.categoriesService.findAll();
+  @UseGuards(JwtTwoFactorGuard)
+  async getAllCategories(@Query() query: QueryParse) {
+    const { result, pagination } = await this.categoriesService.findAll(query);
+    return Resolve.ok(0, 'Success', result, { pagination });
   }
 
   @Get(':id')

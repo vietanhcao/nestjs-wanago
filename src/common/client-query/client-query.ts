@@ -1,31 +1,19 @@
-import { FilterQuery, Model, PopulateOptions, UpdateQuery } from 'mongoose';
-import { CONST } from './global/const';
+import { Model, PipelineStage } from 'mongoose';
+import {
+  LIMIT_DEFAULT,
+  OFFSET_DEFAULT,
+  QUERY_MAPPING,
+} from './client-query.constant';
+import {
+  ModelQuery,
+  QueryParse,
+  QueryAggregate,
+  ParseQueryResult,
+  PaginationResult,
+  ClientQueryOptions,
+} from './client-query.type';
 
-export type ClientQueryOptions<T> = {
-  populate?: PopulateOptions | Array<PopulateOptions>;
-  omit?: string[];
-  queryMongoose?: FilterQuery<T>;
-};
-
-export type ModelQuery<T> = UpdateQuery<T> & Record<string, unknown>;
-
-export type QueryParse = {
-  [key: string]: string | number | Record<string, unknown>;
-};
-
-export type ParseQueryResult<T> = {
-  filter: FilterQuery<T>;
-  limit: number;
-  offset: number;
-  sort: string | any;
-};
-
-export type PaginationResult = {
-  totalRows: number;
-  totalPages: number;
-};
-
-class ClientQuery<T> {
+export default class ClientQuery<T> {
   public model: Model<T>;
 
   constructor(model: Model<T>) {
@@ -60,44 +48,80 @@ class ClientQuery<T> {
   ) {
     const { populate, queryMongoose } = options || {};
     const { filter, limit, offset, sort } = this.parseQuery(query || {});
-    // Todo: Lọc dữ liệu theo query và lấy phân trang
+
+    //- Lọc dữ liệu theo query và lấy phân trang
     const omit = options?.omit || [];
     const mongoFilter = queryMongoose
       ? { ...filter, ...queryMongoose }
       : filter;
+
     // isGetAllPagination
     const pagination = await this.getPagination(
       isGetAllPagination ? {} : mongoFilter,
       limit,
     );
-    // Todo: Tạo câu query database theo query client
-    const results = await this.model
+
+    //- Tạo câu query database theo query client
+    const results: T[] = await this.model
       .find(mongoFilter)
       .skip(offset)
       .limit(limit)
       .sort(sort)
       .populate(populate)
       .lean();
+
     return {
-      result: omit.length ? this.omit(results as T[], omit) : results,
+      hits: omit.length ? this.omit(results, omit) : results,
       pagination: pagination,
     };
   }
 
-  public parseQuery(query: QueryParse): ParseQueryResult<T> {
-    const limit = Number(query.limit) || 20;
-    const offset = Number(query.offset) || 0;
+  /**
+   * Lấy danh sách bản ghi theo query của `client` gửi lên
+   * @param query
+   * @param options
+   */
+  async queryAggregate(query: QueryParse, options?: QueryAggregate) {
+    const { filter, limit, offset, sort } = this.parseQuery(query || {});
+    const { aggregate, queryFilter } = options || {};
 
-    // Todo: Xoá 2 key limit và offset ra khỏi query nếu có
+    //- Lọc dữ liệu theo query và lấy phân trang
+    const pagination = await this.getPagination(filter, limit);
+    const match: PipelineStage[] = [
+      { $match: { ...filter, ...queryFilter } },
+      ...aggregate,
+    ];
+
+    if (Object.keys(sort).length != 0) match.push({ $sort: sort });
+    //- Tạo câu query database theo query client
+    const data = await this.model.aggregate([
+      ...match,
+      { $skip: limit * offset },
+      { $limit: limit },
+    ]);
+
+    return {
+      hits: data,
+      pagination,
+    };
+  }
+
+  public parseQuery(query: QueryParse): ParseQueryResult<T> {
+    const limit = Number(query.limit) || LIMIT_DEFAULT;
+    const offset = Number(query.offset) || OFFSET_DEFAULT;
+
+    //- Xoá 2 key limit và offset ra khỏi query nếu có
     delete query['limit'];
     delete query['offset'];
 
     const keys = Object.keys(query);
-    const config = CONST.QUERY_CONFIG;
+    const config = QUERY_MAPPING;
     const filter = {};
     const sort = {};
-    // Todo: Chuyển query sang dạng query của mongoose
+
+    //- Chuyển query sang dạng query của mongoose
     keys.forEach((key) => {
+      // Lặp qua các giá trị query filter
       const value = query[key];
       config.forEach((element) => {
         if (typeof value != 'object') return;
@@ -113,12 +137,16 @@ class ClientQuery<T> {
       });
     });
 
-    // Todo: Chuyển query or sang dạng mongoose
+    //- Chuyển query or sang dạng mongoose
     const or = [];
     Object.keys(filter).map((o) => {
       if (filter[o]['$or']) {
         or.push({ [o]: filter[o]['$or'] });
         delete filter[o];
+      }
+
+      if (filter[o] && filter[o]['$regex']) {
+        filter[o] = { $regex: filter[o]['$regex'], $options: 'i' };
       }
     });
     if (or && or.length) filter['$or'] = or;
@@ -132,13 +160,13 @@ class ClientQuery<T> {
   }
 
   public omit(value: T[], keys: string[]) {
-    if (!value || typeof value != 'object') return value;
+    if (!value || !Array.isArray(value)) return value;
 
     const omit = (value: T, key: string[]) => {
       const clone = value;
       const keys = Object.keys(clone);
 
-      // Todo: Delete key on key input
+      //- Delete key on key input
       for (let k = 0; k <= key.length; k++) {
         for (let e = 0; e <= keys.length; e++) {
           if (keys[e] == key[k]) {
@@ -166,5 +194,3 @@ class ClientQuery<T> {
     return pagination;
   }
 }
-
-export default ClientQuery;

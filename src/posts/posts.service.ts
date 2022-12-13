@@ -9,7 +9,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Cache } from 'cache-manager';
 import * as mongoose from 'mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import ClientQuery from '../common/client-query';
+import { QueryParse } from 'src/common/client-query/client-query.type';
+import ClientQuery from '../common/client-query/client-query';
 import { User } from '../users/schema/user.schema';
 import { GET_POSTS_CACHE_KEY } from './cache/postsCacheKey.constant';
 import { PostDto } from './dto/post.dto';
@@ -45,7 +46,12 @@ class PostsService {
    * @param limit
    * @param startId
    */
-  async findAll(startId?: string, searchQuery?: string, user?: User, query?) {
+  async findAll(
+    startId?: string,
+    searchQuery?: string,
+    user?: User,
+    query?: QueryParse,
+  ) {
     const filters: FilterQuery<PostDocument> = startId
       ? {
           _id: {
@@ -78,7 +84,7 @@ class PostsService {
     // if (+limitOfDocuments) {
     //   findQuery.limit(limitOfDocuments);
     // }
-    const { result, pagination } = await this.postClientQuery.findForQuery(
+    const { hits, pagination } = await this.postClientQuery.findForQuery(
       query,
       {
         populate: [
@@ -93,7 +99,7 @@ class PostsService {
     );
     // const results = await response;
     // const count = await this.postModel.find(filters).countDocuments();
-    return { result, pagination };
+    return { result: hits, pagination };
   }
 
   async findOne(id: string) {

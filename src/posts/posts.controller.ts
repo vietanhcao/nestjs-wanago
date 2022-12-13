@@ -12,6 +12,7 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
+import { QueryParse } from 'src/common/client-query/client-query.type';
 import Role from '../authentication/enum/role.enum';
 // import PermissionGuard from '../authentication/guards/permission.guard';
 import RoleGuard from '../authentication/guards/role.guard';
@@ -68,7 +69,7 @@ export default class PostsController {
     @Query('searchQuery') searchQuery: string,
     @Query('search') search: string,
     @Req() req: RequestWithUser,
-    @Query() query,
+    @Query() query: QueryParse,
   ) {
     if (search) {
       // hide elastic search

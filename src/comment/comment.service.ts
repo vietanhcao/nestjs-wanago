@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import ClientQuery from '../common/client-query';
+import ClientQuery from '../common/client-query/client-query';
 import { User } from '../users/schema/user.schema';
 import { Comments, CommentsDocument } from './comment.schema';
 import CommentDto from './dto/comment.dto';
@@ -16,7 +16,7 @@ export class CommentService {
   }
 
   async findAllByPostId(postId: string, query?) {
-    const { result, pagination } = await this.commentClientQuery.findForQuery(
+    const { hits, pagination } = await this.commentClientQuery.findForQuery(
       query,
       {
         queryMongoose: { postId },
@@ -28,7 +28,7 @@ export class CommentService {
     );
     // const results = await response;
     // const count = await this.postModel.find(filters).countDocuments();
-    return { result, pagination };
+    return { result: hits, pagination };
   }
 
   // async findOne(id: string) {

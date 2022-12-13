@@ -4,7 +4,7 @@ import { WsException } from '@nestjs/websockets';
 import mongoose, { Model } from 'mongoose';
 import { Socket } from 'socket.io';
 import { AuthenticationService } from '../authentication/authentication.service';
-import ClientQuery from '../common/client-query';
+import ClientQuery from '../common/client-query/client-query';
 import { User } from '../users/schema/user.schema';
 import { Message, MessageDocument } from './message.schema';
 
@@ -42,7 +42,7 @@ export class ChatService {
         },
       };
     }
-    const { result, pagination } = await this.chatClientQuery.findForQuery(
+    const { hits, pagination } = await this.chatClientQuery.findForQuery(
       {
         filter: {},
         limit: limitOfDocuments,
@@ -61,7 +61,7 @@ export class ChatService {
     );
     // const results = await response;
     // const count = await this.postModel.find(filters).countDocuments();
-    return { result, pagination };
+    return { result: hits, pagination };
   }
 
   async getUserFromSocket(socket: Socket) {
