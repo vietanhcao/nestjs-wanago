@@ -7,11 +7,15 @@ import CategoryDto from './dto/category.dto';
 import { User } from '../users/schema/user.schema';
 import ClientQuery from 'src/common/client-query/client-query';
 import { QueryParse } from 'src/common/client-query/client-query.type';
+import { ServiceApproveService } from 'src/service-approve/service-approve.service';
+import { ApproveActions } from 'src/service-approve/types';
 
 @Injectable()
 class CategoriesService {
   constructor(
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
+
+    private readonly approveService: ServiceApproveService,
   ) {}
 
   /**
@@ -35,12 +39,33 @@ class CategoriesService {
     return category;
   }
 
-  create(categoryData: CategoryDto, author: User) {
-    const createdCategory = new this.categoryModel({
+  /**
+   *  Creates a new category pendding and wating for approval
+   * @param categoryData
+   * @param author
+   * @returns
+   */
+  async create(categoryData: CategoryDto, author: User) {
+    // có thể test transaction ở đây
+    const createdCategory = await this.categoryModel.create({
       ...categoryData,
       author,
     });
-    return createdCategory.save();
+
+    const newData = {
+      ...categoryData,
+      id: createdCategory._id,
+      modifiedBy: author,
+    };
+
+    //- Tạo yêu cầu phê duyệt tạo mới category
+    await this.approveService.create({
+      action: ApproveActions.CREATE_CATEGORY,
+      newData,
+      oldData: newData,
+      createdBy: author._id.toString(),
+    });
+    return createdCategory;
   }
 
   async update(id: string, categoryData: CategoryDto) {

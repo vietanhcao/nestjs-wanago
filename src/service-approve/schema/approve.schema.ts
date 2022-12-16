@@ -1,17 +1,17 @@
 import { ApproveStatus, ApproveActions } from '../types/index';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+import { Type } from 'class-transformer';
+import { User } from 'src/users/schema/user.schema';
 
 @Schema({ timestamps: true, collection: 'approves' })
 export class ApproveDocument extends Document {
   @Prop({ required: true, type: String, enum: ApproveActions })
   action: ApproveActions;
 
-  @Prop({ required: true, type: String })
-  createdBy: string;
-
-  @Prop({ type: String })
-  memberCode: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' }) // like many to one relationship
+  @Type(() => User)
+  createdBy: User;
 
   @Prop({
     type: String,
@@ -45,5 +45,4 @@ export class ApproveDocument extends Document {
   extraData?: Record<string, unknown>;
 }
 
-export const MemberApproveSchema =
-  SchemaFactory.createForClass(ApproveDocument);
+export const ApproveSchema = SchemaFactory.createForClass(ApproveDocument);

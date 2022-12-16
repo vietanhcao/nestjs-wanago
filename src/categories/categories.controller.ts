@@ -36,11 +36,13 @@ export default class CategoriesController {
   }
 
   @Get(':id')
+  @UseGuards(JwtTwoFactorGuard)
   async getCategory(@Param() { id }: ParamsWithId) {
     return this.categoriesService.findOne(id);
   }
 
   @Post()
+  @UseGuards(JwtTwoFactorGuard)
   @UseGuards(PermissionGuard(CategoriesPermission.CreateCategory))
   async createCategory(
     @Body() category: CategoryDto,
@@ -50,11 +52,13 @@ export default class CategoriesController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtTwoFactorGuard)
   async deleteCategory(@Param() { id }: ParamsWithId) {
     return this.categoriesService.delete(id);
   }
 
   @Put(':id')
+  @UseGuards(JwtTwoFactorGuard)
   async updateCategory(
     @Param() { id }: ParamsWithId,
     @Body() category: CategoryDto,
