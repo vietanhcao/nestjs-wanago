@@ -1,14 +1,15 @@
-import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Category, CategoryDocument } from './category.schema';
-import { NotFoundException } from '@nestjs/common';
-import CategoryDto from './dto/category.dto';
-import { User } from '../users/schema/user.schema';
+import * as _ from 'lodash';
+import { Model } from 'mongoose';
 import ClientQuery from 'src/common/client-query/client-query';
 import { QueryParse } from 'src/common/client-query/client-query.type';
 import { ServiceApproveService } from 'src/service-approve/service-approve.service';
 import { ApproveActions } from 'src/service-approve/types';
+import { User } from '../users/schema/user.schema';
+import { Category, CategoryDocument } from './category.schema';
+import CategoryDto from './dto/category.dto';
+import { CategoryStatus } from './types';
 
 @Injectable()
 class CategoriesService {
@@ -25,7 +26,10 @@ class CategoriesService {
   async findAll(query: QueryParse) {
     const client = new ClientQuery(this.categoryModel);
     const response = await client.findForQuery(query, {
-      populate: { path: 'author', select: '-password' },
+      populate: [
+        { path: 'author', select: 'email' },
+        { path: 'modifiedBy', select: 'email' },
+      ],
     });
 
     return { ...response, result: response.hits };
@@ -54,7 +58,7 @@ class CategoriesService {
 
     const newData = {
       ...categoryData,
-      id: createdCategory._id,
+      _id: createdCategory._id,
       modifiedBy: author,
     };
 
@@ -67,7 +71,29 @@ class CategoriesService {
     });
     return createdCategory;
   }
+  /**
+   * Phê duyệt tạo mới category
+   * @param id
+   * @param updatedBy
+   * @returns
+   */
+  public async approvalCategoryCreate(
+    _id: string,
+    newData: { [key: string]: unknown },
+  ) {
+    const updated = await this.categoryModel.findOneAndUpdate(
+      { _id },
+      { $set: { status: CategoryStatus.ACTIVE, ..._.omit(newData, ['_id']) } },
+      { new: true },
+    );
+    if (!updated) {
+      throw new NotFoundException('Không tìm thấy category');
+    }
 
+    return updated;
+  }
+
+  // todo update approve
   async update(id: string, categoryData: CategoryDto) {
     const category = await this.categoryModel
       .findByIdAndUpdate(id, categoryData)

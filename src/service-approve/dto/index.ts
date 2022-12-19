@@ -1,7 +1,6 @@
 import {
   IsEnum,
   IsMongoId,
-  IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
@@ -26,12 +25,6 @@ export class ApproveCreateDto {
 }
 
 export class ApprovedDto {
-  @IsMongoId()
-  approveId: string;
-
-  @IsString()
-  modifiedBy: string;
-
   @IsString()
   @IsEnum(ApproveActions)
   action: ApproveActions;
@@ -42,6 +35,5 @@ export class ApproveActionDto {
   approveId: string;
 
   @IsString()
-  @IsNotEmpty()
   modifiedBy: string;
 }

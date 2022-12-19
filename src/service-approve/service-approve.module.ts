@@ -1,5 +1,7 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import CategoriesModule from 'src/categories/categories.module';
+import { ApproveCategoryService } from './approve-category.service';
 import { ApproveDocument, ApproveSchema } from './schema/approve.schema';
 import { ServiceApproveController } from './service-approve.controller';
 import { ServiceApproveService } from './service-approve.service';
@@ -9,9 +11,10 @@ import { ServiceApproveService } from './service-approve.service';
     MongooseModule.forFeature([
       { name: ApproveDocument.name, schema: ApproveSchema },
     ]),
+    forwardRef(() => CategoriesModule),
   ],
   controllers: [ServiceApproveController],
-  providers: [ServiceApproveService],
-  exports: [ServiceApproveService],
+  providers: [ServiceApproveService, ApproveCategoryService],
+  exports: [ServiceApproveService, ApproveCategoryService],
 })
 export class ServiceApproveModule {}

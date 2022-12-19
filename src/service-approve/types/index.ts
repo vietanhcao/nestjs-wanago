@@ -21,7 +21,15 @@ export enum ApproveActions {
 export const ApproveConfigs = {
   [ApproveActions.CREATE_CATEGORY]: {
     description: 'Phê duyệt tạo category',
-    accepted: `EVENT_CONFIG.SVC_MEMBER.ADMIN_APPROVED_CREATE_CATEGORY`,
-    rejected: `EVENT_CONFIG.SVC_MEMBER.ADMIN_REJECTED_CREATE_CATEGORY`,
+    accepted: `APPROVED_CREATE_CATEGORY`,
+    rejected: `REJECTED_CREATE_CATEGORY`,
   },
 };
+
+export interface IApproved {
+  action: ApproveActions;
+
+  approveId: string;
+
+  modifiedBy: string;
+}

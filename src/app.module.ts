@@ -26,6 +26,7 @@ import { ShutdownService } from './shutdown.service';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { ServiceApproveModule } from './service-approve/service-approve.module';
 import LogsMiddleware from './utils/logs.middleware';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 @Module({
   imports: [
     // The  ConfigModule built into NestJS supports @hapi/joi that we can use to define a validation schema.
@@ -67,6 +68,8 @@ import LogsMiddleware from './utils/logs.middleware';
         UPLOADED_FILES_DESTINATION: Joi.string().required(),
       }),
     }),
+
+    EventEmitterModule.forRoot(),
 
     BullModule.forRootAsync({
       imports: [ConfigModule],
