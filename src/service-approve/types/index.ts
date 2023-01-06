@@ -32,4 +32,6 @@ export interface IApproved {
   approveId: string;
 
   modifiedBy: string;
+
+  rejectedReason?: string;
 }

@@ -45,4 +45,34 @@ export class ApproveCategoryService {
     );
     return _.pick(approve, ['_id', 'action', 'status']);
   }
+
+  /**
+   * Từ chối Phê duyệt tạo thông tin category
+   * @param dto
+   * @returns
+   */
+  async createCategoryRejected(dto: ApproveActionDto, action: ApproveActions) {
+    const approve = await this.approveService.findApprovePendingForAction(
+      dto.approveId,
+      action,
+    );
+    // Cập nhật thông tin phê duyệt
+    const newDataApprove = {
+      status: ApproveStatus.REJECTED,
+      acceptedAt: new Date(),
+      acceptedBy: dto.modifiedBy,
+      rejectedReason: dto.rejectedReason,
+    };
+    await this.approveModel.findByIdAndUpdate(approve._id, newDataApprove, {
+      new: true,
+    });
+
+    //- Gọi sang service để cập nhật thông tin category
+    const { _id } = approve.newData || {};
+    await this.categoryService.rejectedCategoryCreate(
+      _id as string,
+      approve.newData,
+    );
+    return _.pick(approve, ['_id', 'action', 'status']);
+  }
 }

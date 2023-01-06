@@ -58,9 +58,11 @@ export class ServiceOtpService {
       otp,
     });
 
+    // dữ liệu lưu xuống redis có thể chứa thêm tên event để xử lý và payload đính kemf
+    const dataStore = { otp };
     const cacheKey = `${dto.subject}: ${secure}`;
     const ttl = 60 * 60;
-    await this.cacheStore.set<{ otp: string }>(cacheKey, { otp }, { ttl });
+    await this.cacheStore.set<{ otp: string }>(cacheKey, dataStore, { ttl });
     return secure;
   }
 
@@ -84,6 +86,8 @@ export class ServiceOtpService {
       otp === dto.otp,
       new HttpException('OTP INVALID', HttpStatus.BAD_REQUEST),
     );
+
+    // todo: xử lý event sau khi xác thực otp thành công
     return true;
   }
 }

@@ -30,10 +30,23 @@ export class ApprovedDto {
   action: ApproveActions;
 }
 
+export class RejectedDto {
+  @IsString()
+  @IsEnum(ApproveActions)
+  action: ApproveActions;
+
+  @IsString()
+  rejectedReason: string;
+}
+
 export class ApproveActionDto {
   @IsMongoId()
   approveId: string;
 
   @IsString()
   modifiedBy: string;
+
+  @IsOptional() // danhf cho truong hop reject
+  @IsString()
+  rejectedReason?: string;
 }

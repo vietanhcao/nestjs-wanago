@@ -21,4 +21,6 @@ export class ServiceOtpController {
     const secure = await this.serviceOtpService.verifyOtp(dto);
     return Resolve.ok(0, 'Success', secure);
   }
+
+  // quy trình đăng ký otp chứa event vào db sau đó gửi mail -> verify otp -> xóa event trong db (hoặc đổi trạng thái) lấy event trong db ra để xử lý
 }

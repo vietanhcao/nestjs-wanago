@@ -93,6 +93,30 @@ class CategoriesService {
     return updated;
   }
 
+  /**
+   * Từ chối  Phê duyệt tạo mới category
+   * @param id
+   * @param updatedBy
+   * @returns
+   */
+  public async rejectedCategoryCreate(
+    _id: string,
+    newData: { [key: string]: unknown },
+  ) {
+    const updated = await this.categoryModel.findOneAndUpdate(
+      { _id },
+      {
+        $set: { status: CategoryStatus.INACTIVE, ..._.omit(newData, ['_id']) },
+      },
+      { new: true },
+    );
+    if (!updated) {
+      throw new NotFoundException('Không tìm thấy category');
+    }
+
+    return updated;
+  }
+
   // todo update approve
   async update(id: string, categoryData: CategoryDto) {
     const category = await this.categoryModel

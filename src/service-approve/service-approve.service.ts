@@ -58,7 +58,23 @@ export class ServiceApproveService {
     return true;
   }
 
-  // todo rejected...
+  /**
+   * Từ chối phê duyệt category
+   * @param dto
+   */
+  async rejected(dto: IApproved) {
+    const { approveId, action, modifiedBy, rejectedReason } = dto;
+    const config = ApproveConfigs[action];
+    const message = {
+      approveId,
+      modifiedBy,
+      rejectedReason,
+    } as ApproveActionDto;
+
+    // emit event
+    await this.eventEmitter.emitAsync(config.rejected, message);
+    return true;
+  }
 
   /**
    * Tìm yêu cầu phê duyệt đang có trạng thái pending bằng id
