@@ -27,6 +27,7 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { ServiceApproveModule } from './service-approve/service-approve.module';
 import LogsMiddleware from './utils/logs.middleware';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { RBACModule } from './service-rbac/service-rbac.module';
 @Module({
   imports: [
     // The  ConfigModule built into NestJS supports @hapi/joi that we can use to define a validation schema.
@@ -105,6 +106,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     LocalFilesModule,
     ServiceOtpModule,
     ServiceApproveModule,
+    RBACModule,
   ],
   controllers: [AppController],
   providers: [

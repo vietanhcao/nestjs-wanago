@@ -1,0 +1,8 @@
+export enum FUNCTIONS {
+  //- Quản lý category
+  FN_CREATE_CATEGORY = 'FN_CREATE_CATEGORY',
+
+  FN_DELETE_POST = 'FN_DELETE_POST',
+
+  FN_CREATE_FILE = 'FN_CREATE_FILE',
+}
