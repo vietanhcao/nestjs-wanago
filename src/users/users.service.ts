@@ -13,6 +13,7 @@ import FilesService from '../files/files.service';
 import PostsService from '../posts/posts.service';
 import CreateUserDto from './dto/createUser.dto';
 import { User, UserDocument } from './schema/user.schema';
+import { withTransaction } from 'src/utils/wapper/withTransaction';
 
 @Injectable()
 class UsersService {
@@ -243,8 +244,7 @@ class UsersService {
   }
 
   async delete(userId: string) {
-    const session = await this.connection.startSession();
-    await session.withTransaction(async () => {
+    const tx = withTransaction(async (session: mongoose.ClientSession) => {
       const user = await this.userModel
         .findByIdAndDelete(userId)
         .populate('posts')
@@ -254,46 +254,14 @@ class UsersService {
         throw new NotFoundException();
       }
       const posts = user.posts;
-
       await this.postsService.deleteMany(
         posts.map((post) => post._id.toString()),
         session,
       );
+
+      return user;
     });
-
-    session.endSession();
-
-    // start transaction
-    // const session = await this.connection.startSession();
-
-    // session.startTransaction();
-    // try {
-    //   debugger
-    //   const user = await this.userModel
-    //     .findByIdAndDelete(userId)
-    //     .populate('posts')
-    //     .session(session);
-
-    //   if (!user) {
-    //     throw new NotFoundException();
-    //   }
-    //   debugger
-    //   throw new NotFoundException();
-    //   const posts = user.posts;
-
-    //   await this.postsService.deleteMany(
-    //     posts.map((post) => post._id.toString()),
-    //     session,
-    //   );
-    //   // everything work fine @commitTransaction
-    //   await session.commitTransaction();
-    // } catch (error) {
-    //   // discard the operations
-    //   await session.abortTransaction();
-    //   throw error;
-    // } finally {
-    //   session.endSession();
-    // }
+    return tx;
   }
 }
 

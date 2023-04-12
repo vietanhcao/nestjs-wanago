@@ -14,7 +14,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         const host = configService.get('MONGO_HOST');
 
         return {
-          uri: `mongodb://${username}:${password}@${host}`,
+          uri: `mongodb://${username}:${password}@${host}?&directConnection=true`,
           dbName: database,
         };
       },
