@@ -2,7 +2,7 @@ import * as Joi from '@hapi/joi';
 import { BullModule } from '@nestjs/bull';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -28,8 +28,15 @@ import { ServiceApproveModule } from './service-approve/service-approve.module';
 import LogsMiddleware from './utils/logs.middleware';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RBACModule } from './service-rbac/service-rbac.module';
+import { CustomThrottlerGuard } from './utils/guards/throttler.guard';
+import { ThrottlerModule } from '@nestjs/throttler';
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10, // Giới hạn số request có thể truy cập trong thời gian ttl
+    }),
+
     // The  ConfigModule built into NestJS supports @hapi/joi that we can use to define a validation schema.
     ConfigModule.forRoot({
       validationSchema: Joi.object({
@@ -115,6 +122,10 @@ import { RBACModule } from './service-rbac/service-rbac.module';
     {
       provide: APP_FILTER,
       useClass: ExceptionsLoggerFilter, // sử dựng custom filter  để log exception thay thế cho default filter
+    },
+    {
+      provide: APP_GUARD,
+      useClass: CustomThrottlerGuard,
     },
   ],
 })

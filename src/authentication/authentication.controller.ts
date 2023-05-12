@@ -29,6 +29,7 @@ import RequestWithUser from './requestWithUser.interface';
 import JwtAuthenticationGuard from './token/jwt-authentication.guard';
 import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
 import { CacheBuilder } from 'src/common/builder/cache.builder';
+import { JwtAuthorizationGuard } from 'src/utils/guards/jwt-auth.guard';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -58,6 +59,7 @@ export class AuthenticationController {
    * @access public
    */
   @UseGuards(LocalAuthenticationGuard)
+  @UseGuards(JwtAuthorizationGuard)
   @Post('log-in')
   async logIn(@Req() request: RequestWithUser) {
     const { user } = request;
