@@ -4,8 +4,6 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import CategoriesModule from './categories/categories.module';
 import { ChatModule } from './chat/chat.module';
@@ -115,9 +113,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
     ServiceApproveModule,
     RBACModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     ShutdownService,
     {
       provide: APP_FILTER,
