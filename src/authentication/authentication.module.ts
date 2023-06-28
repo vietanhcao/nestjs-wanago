@@ -1,18 +1,18 @@
 import { CacheModule, Module } from '@nestjs/common';
-import { AuthenticationService } from './authentication.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import * as redisStore from 'cache-manager-redis-store';
+import { EmailConfirmationModule } from '../email-confirmation/email-confirmation.module';
 import { UsersModule } from '../users/users.module';
 import { AuthenticationController } from './authentication.controller';
-import { PassportModule } from '@nestjs/passport';
+import { AuthenticationService } from './authentication.service';
 import { LocalStrategy } from './local.strategy';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './token/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './token/jwt-refresh.strategy';
-import { EmailConfirmationModule } from '../email-confirmation/email-confirmation.module';
+import { JwtStrategy } from './token/jwt.strategy';
+import { JwtTwoFactorStrategy } from './twoFactor/jwt-two-factor.strategy';
 import { TwoFactorAuthenticationController } from './twoFactor/twoFactorAuthentication.controller';
 import { TwoFactorAuthenticationService } from './twoFactor/twoFactorAuthentication.service';
-import { JwtTwoFactorStrategy } from './twoFactor/jwt-two-factor.strategy';
-import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [

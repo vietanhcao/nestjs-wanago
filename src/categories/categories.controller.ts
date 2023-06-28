@@ -14,7 +14,7 @@ import {
 import JwtTwoFactorGuard from 'src/authentication/twoFactor/jwt-two-factor.guard';
 import { QueryParse } from 'src/common/client-query/client-query.type';
 import Resolve from 'src/common/helpers/Resolve';
-import PermissionGuard from '../authentication/guards/permission.guard';
+import Permission2FaGuard from '../authentication/guards/permission2FA.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
 import ParamsWithId from '../utils/paramsWithId';
@@ -43,7 +43,7 @@ export default class CategoriesController {
 
   @Post()
   @UseGuards(JwtTwoFactorGuard)
-  @UseGuards(PermissionGuard(CategoriesPermission.CreateCategory))
+  @UseGuards(Permission2FaGuard(CategoriesPermission.CreateCategory))
   async createCategory(
     @Body() category: CategoryDto,
     @Req() req: RequestWithUser,

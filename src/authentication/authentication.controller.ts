@@ -15,21 +15,21 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
+import { CacheBuilder } from 'src/common/builder/cache.builder';
+import { StrategyKey } from '../common/constant';
 import Resolve from '../common/helpers/Resolve';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
-import ParamsWithId from '../utils/paramsWithId';
 import UsersService from '../users/users.service';
+import ParamsWithId from '../utils/paramsWithId';
 import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';
 import Role from './enum/role.enum';
 import RoleGuard from './guards/role.guard';
-import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import RequestWithUser from './requestWithUser.interface';
-import JwtAuthenticationGuard from './token/jwt-authentication.guard';
 import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
-import { CacheBuilder } from 'src/common/builder/cache.builder';
-import { JwtAuthorizationGuard } from 'src/utils/guards/jwt-auth.guard';
+import JwtTwoFactorGuard from './twoFactor/jwt-two-factor.guard';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -58,8 +58,8 @@ export class AuthenticationController {
    * @route Post /authentication/log-in
    * @access public
    */
-  @UseGuards(LocalAuthenticationGuard)
-  @UseGuards(JwtAuthorizationGuard)
+  // @UseGuards(LocalAuthenticationGuard)
+  @UseGuards(AuthGuard(StrategyKey.LOCAL.ADMIN))
   @Post('log-in')
   async logIn(@Req() request: RequestWithUser) {
     const { user } = request;
@@ -161,7 +161,7 @@ export class AuthenticationController {
    * @access public
    */
   @HttpCode(200)
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @Post('log-out')
   async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
     await this.usersService.removeRefreshToken(request.user.id);
@@ -172,7 +172,7 @@ export class AuthenticationController {
     return response.json(Resolve.ok(200, 'success'));
   }
 
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @Get()
   // @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
   async authenticate(@Req() request: RequestWithUser) {
@@ -192,7 +192,7 @@ export class AuthenticationController {
     return Resolve.ok(200, 'Success', user);
   }
 
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @UseGuards(RoleGuard(Role.Admin))
   @Delete(':id')
   async deletePost(@Param() { id }: ParamsWithId) {

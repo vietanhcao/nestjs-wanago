@@ -14,7 +14,6 @@ import {
 } from '@nestjs/common';
 import { QueryParse } from 'src/common/client-query/client-query.type';
 import Role from '../authentication/enum/role.enum';
-// import PermissionGuard from '../authentication/guards/permission.guard';
 import RoleGuard from '../authentication/guards/role.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import JwtTwoFactorGuard from '../authentication/twoFactor/jwt-two-factor.guard';
@@ -99,7 +98,6 @@ export default class PostsController {
   }
 
   @Delete(':id')
-  // @UseGuards(PermissionGuard(PostsPermission.DeletePost))
   @UseGuards(JwtTwoFactorGuard)
   async deletePost(@Param() { id }: ParamsWithId, @Req() req: RequestWithUser) {
     await this.postsService.delete(id, req.user);

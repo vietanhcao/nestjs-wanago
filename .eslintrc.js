@@ -21,6 +21,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     // semi: ["error", "always"],
-    'no-unused-vars': ['error', { vars: 'all' }], // thêm vào dòng này
+    // 'no-unused-vars': ['error', { vars: 'all' }], // thêm vào dòng này
   },
 };
