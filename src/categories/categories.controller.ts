@@ -9,22 +9,18 @@ import {
   Query,
   Req,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import JwtTwoFactorGuard from 'src/authentication/twoFactor/jwt-two-factor.guard';
 import { QueryParse } from 'src/common/client-query/client-query.type';
 import Resolve from 'src/common/helpers/Resolve';
 import Permission2FaGuard from '../authentication/guards/permission2FA.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
-import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
 import ParamsWithId from '../utils/paramsWithId';
 import CategoriesService from './categories.service';
-import { Category } from './category.schema';
 import CategoryDto from './dto/category.dto';
 import CategoriesPermission from './enum/categoriesPermission.enum';
 
 @Controller('categories')
-@UseInterceptors(MongooseClassSerializerInterceptor(Category))
 export default class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 

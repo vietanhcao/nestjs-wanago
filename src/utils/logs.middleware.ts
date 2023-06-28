@@ -34,6 +34,7 @@ class LogsMiddleware implements NestMiddleware {
           level: LeverLog.log,
         });
       }
+
       if (statusCode >= 500) {
         this.logsService.createLog({
           bodyString,

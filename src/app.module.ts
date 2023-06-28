@@ -2,8 +2,10 @@ import * as Joi from '@hapi/joi';
 import { BullModule } from '@nestjs/bull';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { APP_GUARD } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthenticationModule } from './authentication/authentication.module';
 import CategoriesModule from './categories/categories.module';
 import { ChatModule } from './chat/chat.module';
@@ -19,15 +21,12 @@ import { LogsModule } from './logs/logs.module';
 import { OptimizeModule } from './optimize/optimize.module';
 import PostsModule from './posts/posts.module';
 import SeriesModule from './series/series.module';
-import { ServiceOtpModule } from './service-otp/service-otp.module';
-import { ShutdownService } from './shutdown.service';
-import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { ServiceApproveModule } from './service-approve/service-approve.module';
-import LogsMiddleware from './utils/logs.middleware';
-import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ServiceOtpModule } from './service-otp/service-otp.module';
 import { RBACModule } from './service-rbac/service-rbac.module';
+import { ShutdownService } from './shutdown.service';
 import { CustomThrottlerGuard } from './utils/guards/throttler.guard';
-import { ThrottlerModule } from '@nestjs/throttler';
+import LogsMiddleware from './utils/logs.middleware';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -116,10 +115,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
   controllers: [],
   providers: [
     ShutdownService,
-    {
-      provide: APP_FILTER,
-      useClass: ExceptionsLoggerFilter, // sử dựng custom filter  để log exception thay thế cho default filter
-    },
     {
       provide: APP_GUARD,
       useClass: CustomThrottlerGuard,

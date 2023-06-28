@@ -8,18 +8,14 @@ import {
   Put,
   Req,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
-import SeriesService from './series.service';
+import RequestWithUser from '../authentication/requestWithUser.interface';
+import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
 import ParamsWithId from '../utils/paramsWithId';
 import SeriesDto from './dto/series.dto';
-import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
-import RequestWithUser from '../authentication/requestWithUser.interface';
-import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
-import { Series } from './series.schema';
+import SeriesService from './series.service';
 
 @Controller('series')
-@UseInterceptors(MongooseClassSerializerInterceptor(Series))
 export default class SeriesController {
   constructor(private readonly seriesService: SeriesService) {}
 

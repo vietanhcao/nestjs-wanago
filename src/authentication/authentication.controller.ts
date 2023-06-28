@@ -44,7 +44,6 @@ export class AuthenticationController {
   //dto validation
   @Post('register')
   @UsePipes(ValidationPipe)
-  // @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
   async register(@Body() registrationData: RegisterDto) {
     await this.authenticationService.register(registrationData);
     await this.emailConfirmationService.sendVerificationLink(
@@ -174,7 +173,6 @@ export class AuthenticationController {
 
   @UseGuards(JwtTwoFactorGuard)
   @Get()
-  // @UseInterceptors(MongooseClassSerializerInterceptor(User)) //enable exclude the password when returning the data of the user.
   async authenticate(@Req() request: RequestWithUser) {
     // cache builder
     const builder = new CacheBuilder();

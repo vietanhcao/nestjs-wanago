@@ -10,24 +10,18 @@ import {
 } from '@nestjs/common';
 import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
 import Resolve from '../common/helpers/Resolve';
-// import { PaginationParams } from '../utils/paginationParams';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import ParamsWithId from '../utils/paramsWithId';
 import { CommentService } from './comment.service';
 import CommentDto from './dto/comment.dto';
 
 @Controller('comment')
-// @UseInterceptors(MongooseClassSerializerInterceptor(Comments))
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @Get('/:id')
   @UseGuards(JwtAuthenticationGuard)
-  async getAllComments(
-    // @Query() { skip, limit }: PaginationParams,
-    @Param() { id }: ParamsWithId,
-    @Query() query,
-  ) {
+  async getAllComments(@Param() { id }: ParamsWithId, @Query() query) {
     // const { result, pagination } = await this.commentService.findAllByPostId(
     //   id,
     //   skip,

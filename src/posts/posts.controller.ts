@@ -9,7 +9,6 @@ import {
   Put,
   Query,
   Req,
-  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import { QueryParse } from 'src/common/client-query/client-query.type';
@@ -18,15 +17,12 @@ import RoleGuard from '../authentication/guards/role.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import JwtTwoFactorGuard from '../authentication/twoFactor/jwt-two-factor.guard';
 import Resolve from '../common/helpers/Resolve';
-import { ExceptionsLoggerFilter } from '../utils/exceptionsLogger.filter';
 import ParamsWithId from '../utils/paramsWithId';
 import PostDto from './dto/post.dto';
 import UpdatePostDto from './dto/updatePost.dto';
-// import PostsPermission from './enum/postsPermission.enum';
 import PostsService from './posts.service';
 
 @Controller('posts')
-// @UseInterceptors(MongooseClassSerializerInterceptor(PostModel)) //enable to execute class-transformer
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
@@ -40,7 +36,6 @@ export default class PostsController {
   // @CacheTTL(120)
   @Get()
   async getAllPosts(
-    // @Query() { startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
     @Query('search') search: string,
     @Query() query,
@@ -64,7 +59,6 @@ export default class PostsController {
   @Get('me')
   @UseGuards(RoleGuard(Role.User))
   async getAllPostsByUser(
-    // @Query() { startId }: PaginationParams,
     @Query('searchQuery') searchQuery: string,
     @Query('search') search: string,
     @Req() req: RequestWithUser,
@@ -84,7 +78,7 @@ export default class PostsController {
   }
 
   @Get(':id')
-  @UseFilters(ExceptionsLoggerFilter) // catch all exception
+  @UseGuards(JwtTwoFactorGuard) //
   async getPost(@Param() { id }: ParamsWithId) {
     const response = await this.postsService.findOne(id);
     return Resolve.ok(0, 'Success', response);
