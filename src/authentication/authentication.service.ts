@@ -45,6 +45,7 @@ export class AuthenticationService {
         'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
       )}s`,
     });
+    // generate refresh token for cookie
     const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
       'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
     )}`;

@@ -55,7 +55,9 @@ class PostsService {
     const filters: FilterQuery<PostDocument> = startId
       ? {
           _id: {
-            $gt: startId,
+            $gt: mongoose.isValidObjectId(startId)
+              ? startId
+              : '000000000000000000000000', // match all documents
           },
         }
       : {};

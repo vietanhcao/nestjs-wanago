@@ -17,6 +17,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
+import * as _ from 'lodash';
 import { CacheBuilder } from 'src/common/builder/cache.builder';
 import { StrategyKey } from '../common/constant';
 import Resolve from '../common/helpers/Resolve';
@@ -94,71 +95,18 @@ export class AuthenticationController {
     });
   }
 
-  // /**
-  //  * @desc  use refresh token to get a new token
-  //  * @route Post /authentication/log-in-refresh
-  //  * @access public
-  //  */
-  // @HttpCode(200)
-  // @UseGuards(LocalAuthenticationGuard)
-  // @Post('log-in-refresh')
-  // async logInRefresh(
-  //   @Req() request: RequestWithUser,
-  //   @Res() response: Response,
-  // ) {
-  //   const { user } = request;
-  //   const accessTokenCookie =
-  //     this.authenticationService.getCookieWithJwtAccessToken(user.id);
-  //   const refreshTokenCookie =
-  //     this.authenticationService.getCookieWithJwtRefreshToken(user.id);
-  //   const refreshToken = refreshTokenCookie.token;
-
-  //   await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
-
-  //   request.res.setHeader('Set-Cookie', [
-  //     accessTokenCookie.cookie,
-  //     refreshTokenCookie.cookie,
-  //   ]);
-  //   //remove password
-  //   user.password = undefined;
-  //   // response cookie and token
-  //   return response.json({
-  //     user,
-  //     accessToken: accessTokenCookie.token,
-  //     refreshTokenCookie: refreshTokenCookie.token,
-  //   });
-  // }
-
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
   async refresh(@Req() request: RequestWithUser) {
     const accessTokenCookie =
       this.authenticationService.getCookieWithJwtAccessToken(request.user.id);
     request.res.setHeader('Set-Cookie', accessTokenCookie.cookie);
-
     return Resolve.ok(200, 'success', {
-      user: request.user,
+      user: _.omit(request.user, ['currentHashedRefreshToken']),
       accessToken: accessTokenCookie.token,
     });
   }
 
-  // @UseGuards(JwtAuthenticationGuard)
-  // @Post('log-out-refresh')
-  // @HttpCode(200)
-  // async logOutRefresh(@Req() request: RequestWithUser) {
-  //   await this.usersService.removeRefreshToken(request.user.id);
-  //   request.res.setHeader(
-  //     'Set-Cookie',
-  //     this.authenticationService.getCookiesForLogOut(),
-  //   );
-  //   return Resolve.ok(200, 'success');
-  // }
-
-  /**
-   * @desc  @JwtAuthenticationGuard will be triggered @jwt.strategy => get user per request
-   * @route Post /authentication/log-out
-   * @access public
-   */
   @HttpCode(200)
   @UseGuards(JwtTwoFactorGuard)
   @Post('log-out')

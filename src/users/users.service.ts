@@ -93,7 +93,8 @@ class UsersService {
       .findById(id)
       .select(
         'lastName firstName avatar role currentHashedRefreshToken email twoFactorAuthenticationSecret isTwoFactorAuthenticationEnabled permissions',
-      );
+      )
+      .lean();
     if (!user) {
       throw new NotFoundException();
     }
