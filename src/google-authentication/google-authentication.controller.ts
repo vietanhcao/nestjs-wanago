@@ -25,6 +25,7 @@ export class GoogleAuthenticationController {
 
     //remove password
     user.password = undefined;
+
     // check two factor authentication
     if (user.isTwoFactorAuthenticationEnabled) {
       return Resolve.ok(200, 'Success', {
