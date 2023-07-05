@@ -1,10 +1,10 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { TokenVerificationDto } from './tokenVerification.dto';
-import Resolve from '../common/helpers/Resolve';
+import Resolve from '../../common/helpers/Resolve';
 import { Request } from 'express';
 import { GoogleAuthenticationService } from './google-authentication.service';
 
-@Controller('google-authentication')
+@Controller('authentication/google')
 export class GoogleAuthenticationController {
   constructor(
     private readonly googleAuthenticationService: GoogleAuthenticationService,

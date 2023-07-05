@@ -7,6 +7,8 @@ import { EmailConfirmationModule } from '../email-confirmation/email-confirmatio
 import { UsersModule } from '../users/users.module';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
+import { GoogleAuthenticationController } from './google-authentication/google-authentication.controller';
+import { GoogleAuthenticationService } from './google-authentication/google-authentication.service';
 import { LocalStrategy } from './local.strategy';
 import { JwtRefreshTokenStrategy } from './token/jwt-refresh.strategy';
 import { JwtStrategy } from './token/jwt.strategy';
@@ -48,8 +50,13 @@ import { TwoFactorAuthenticationService } from './twoFactor/twoFactorAuthenticat
     JwtRefreshTokenStrategy,
     TwoFactorAuthenticationService,
     JwtTwoFactorStrategy,
+    GoogleAuthenticationService,
   ], // imports to use in file controllers
-  controllers: [AuthenticationController, TwoFactorAuthenticationController],
+  controllers: [
+    AuthenticationController,
+    TwoFactorAuthenticationController,
+    GoogleAuthenticationController,
+  ],
   exports: [AuthenticationService],
 })
 export class AuthenticationModule {}

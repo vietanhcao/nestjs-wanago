@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AuthenticationService } from '../authentication/authentication.service';
-import { User } from '../users/schema/user.schema';
-import UsersService from '../users/users.service';
+import { AuthenticationService } from '../authentication.service';
+import { User } from '../../users/schema/user.schema';
+import UsersService from '../../users/users.service';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
 @Injectable()

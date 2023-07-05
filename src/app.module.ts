@@ -14,7 +14,6 @@ import { DatabaseModule } from './database/database.module';
 import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
 import { EmailSchedulingModule } from './emailScheduling/emailSchedule.module';
 import FilesModule from './files/files.module';
-import { GoogleAuthenticationModule } from './google-authentication/google-authentication.module';
 import HealthModule from './health/health.module';
 import { LocalFilesModule } from './local-files/local-files.module';
 import { LogsModule } from './logs/logs.module';
@@ -105,7 +104,6 @@ import LogsMiddleware from './utils/logs.middleware';
     LogsModule,
     OptimizeModule,
     EmailConfirmationModule,
-    GoogleAuthenticationModule,
     DatabaseModule,
     LocalFilesModule,
     ServiceOtpModule,

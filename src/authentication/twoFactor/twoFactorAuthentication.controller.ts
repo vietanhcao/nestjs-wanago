@@ -16,7 +16,7 @@ import JwtAuthenticationGuard from '../token/jwt-authentication.guard';
 import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
 import { Response } from 'express';
 
-@Controller('2fa')
+@Controller('authentication/2fa')
 export class TwoFactorAuthenticationController {
   constructor(
     private readonly twoFactorAuthenticationService: TwoFactorAuthenticationService,
