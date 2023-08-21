@@ -44,9 +44,10 @@ class UsersService {
       user.currentHashedRefreshToken,
     );
 
-    if (isRefreshTokenMatching) {
-      return user;
+    if (!isRefreshTokenMatching) {
+      throw new UnauthorizedException('Refresh token does not match');
     }
+    return user;
   }
 
   async removeRefreshToken(userId: number) {
@@ -98,7 +99,8 @@ class UsersService {
     if (!user) {
       throw new NotFoundException();
     }
-
+    //add property id
+    user.id = user._id.toString();
     return user;
   }
 
